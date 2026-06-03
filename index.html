@@ -1,0 +1,2441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Razón de Contactos — Decanato de Postgrado PUCMM</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#f0f4f8;
+  --sidebar:#0d1f3c;
+  --sidebar-w:250px;
+  --accent:#1a3a8f;
+  --accent2:#c8972a;
+  --accent3:#10b981;
+  --accent4:#ef4444;
+  --card:#ffffff;
+  --text:#1e293b;
+  --text2:#64748b;
+  --border:#e2e8f0;
+  --num-font:'Space Grotesk',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:var(--sidebar);display:flex;flex-direction:column;flex-shrink:0;height:100vh;overflow-y:auto;position:fixed;left:0;top:0;z-index:100;}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:#ffffff20;}
+.sidebar-logo{padding:18px 16px;border-bottom:1px solid #ffffff12;display:flex;align-items:center;gap:10px;}
+.logo-badge{width:36px;height:36px;background:linear-gradient(135deg,#c8972a,#e8b84b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff;flex-shrink:0;}
+.logo-name{font-family:'Playfair Display',serif;font-size:12px;font-weight:700;color:#fff;line-height:1.3;}
+.logo-sub{font-size:9px;color:#ffffff50;letter-spacing:0.5px;}
+.nav-section{padding:14px 10px 4px;}
+.nav-label{font-size:9px;font-weight:700;letter-spacing:2px;color:#ffffff25;text-transform:uppercase;padding:0 6px;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:all 0.15s;color:#ffffff65;font-size:12px;font-weight:500;margin-bottom:1px;}
+.nav-item:hover{background:#ffffff0d;color:#fff;}
+.nav-item.active{background:linear-gradient(135deg,#1a3a8f,#2563eb);color:#fff;box-shadow:0 2px 8px #1a3a8f40;}
+.nav-item i{font-size:15px;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:#ef4444;color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;}
+.sidebar-bottom{margin-top:auto;padding:12px;border-top:1px solid #ffffff10;}
+.user-card{display:flex;align-items:center;gap:9px;padding:8px;border-radius:8px;cursor:pointer;transition:all 0.15s;}
+.user-card:hover{background:#ffffff0d;}
+.user-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),#e8b84b);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0;}
+.user-name{font-size:11px;font-weight:600;color:#fff;}
+.user-role{font-size:9px;color:#ffffff50;}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+/* TOPBAR */
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 22px;height:56px;display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.topbar-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);flex:1;}
+.topbar-title span{color:var(--accent);}
+.search-bar{display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 11px;width:220px;}
+.search-bar input{border:none;background:none;outline:none;font-size:12px;color:var(--text);font-family:'DM Sans',sans-serif;width:100%;}
+.wa-btn-top{display:flex;align-items:center;gap:5px;padding:7px 12px;background:#25d366;border-radius:7px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all 0.15s;}
+.wa-btn-top:hover{background:#128c7e;}
+.tb-btn{width:34px;height:34px;border-radius:7px;border:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);transition:all 0.15s;position:relative;}
+.tb-btn:hover{background:var(--bg);color:var(--accent);}
+.notif-dot{position:absolute;top:5px;right:5px;width:6px;height:6px;background:#ef4444;border-radius:50%;border:1.5px solid #fff;}
+.user-topbar{display:flex;align-items:center;gap:7px;cursor:pointer;padding:5px 9px;border-radius:7px;border:1px solid var(--border);}
+.user-topbar-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#2563eb);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:9px;color:#fff;}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:20px;}
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px;}
+
+/* VIEWS */
+.view{display:none;animation:fadeIn 0.2s ease;}
+.view.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS */
+.card{background:var(--card);border-radius:12px;border:1px solid var(--border);box-shadow:0 1px 3px #0000000a;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);}
+.card-title{font-size:13px;font-weight:700;color:var(--text);}
+.card-body{padding:18px;}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
+.stat-card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:16px;position:relative;overflow:hidden;transition:all 0.2s;cursor:pointer;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px #0000001a;}
+.stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:70px;height:70px;border-radius:50%;opacity:0.06;}
+.stat-card.blue::after{background:var(--accent);}
+.stat-card.gold::after{background:var(--accent2);}
+.stat-card.green::after{background:var(--accent3);}
+.stat-card.purple::after{background:#8b5cf6;}
+.stat-card.red::after{background:var(--accent4);}
+.stat-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:10px;}
+.stat-icon.blue{background:#eff6ff;color:var(--accent);}
+.stat-icon.gold{background:#fffbeb;color:#c8972a;}
+.stat-icon.green{background:#f0fdf4;color:var(--accent3);}
+.stat-icon.red{background:#fef2f2;color:var(--accent4);}
+.stat-icon.purple{background:#f5f3ff;color:#8b5cf6;}
+.stat-label{font-size:10px;color:var(--text2);font-weight:500;margin-bottom:3px;}
+.stat-value{font-family:var(--num-font);font-size:24px;font-weight:700;color:var(--text);margin-bottom:3px;letter-spacing:-0.5px;}
+.stat-change{font-size:10px;font-weight:600;}
+.stat-change.up{color:var(--accent3);}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;padding:9px 13px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;background:#f8fafc;}
+td{padding:11px 13px;font-size:12px;color:var(--text);border-bottom:1px solid #f1f5f9;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafbfc;}
+tr.clickable{cursor:pointer;}
+.avatar-sm{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
+.flex-center{display:flex;align-items:center;gap:8px;}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;}
+.badge.nuevo{background:#eff6ff;color:#1a3a8f;}
+.badge.interesado{background:#fffbeb;color:#b45309;}
+.badge.contactado{background:#f0fdf4;color:#15803d;}
+.badge.proceso{background:#fdf4ff;color:#7e22ce;}
+.badge.admitido{background:#ecfdf5;color:#059669;}
+.badge.listo{background:#dbeafe;color:#1d4ed8;}
+.badge.nointeresado{background:#fef2f2;color:#dc2626;}
+.fuente-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;}
+.fuente-badge.wa{background:#dcfce7;color:#16a34a;}
+.fuente-badge.web{background:#dbeafe;color:#1d4ed8;}
+.fuente-badge.ig{background:#fce7f3;color:#be185d;}
+.fuente-badge.ref{background:#f3e8ff;color:#7c3aed;}
+.fuente-badge.fb{background:#eff6ff;color:#1d4ed8;}
+.fuente-badge.email{background:#fef3c7;color:#b45309;}
+
+/* BUTTONS */
+.btn-primary{padding:7px 14px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.btn-primary:hover{background:#1e40af;}
+.btn-secondary{padding:7px 14px;background:#fff;color:var(--text);border:1px solid var(--border);border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.btn-secondary:hover{background:var(--bg);}
+.btn-wa{padding:6px 10px;background:#25d366;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;}
+.btn-sm{padding:4px 9px;font-size:11px;}
+
+/* FILTERS */
+.filters-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.filter-btn{padding:6px 12px;border-radius:7px;border:1px solid var(--border);background:#fff;font-size:11px;font-weight:600;cursor:pointer;color:var(--text2);transition:all 0.15s;display:flex;align-items:center;gap:4px;}
+.filter-btn:hover,.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* WHATSAPP */
+.wa-panel{display:flex;flex-direction:column;height:100%;}
+.wa-contact-list{width:260px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;height:100%;}
+.wa-chat-area{flex:1;display:flex;flex-direction:column;}
+.wa-header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;background:#f0f2f5;}
+.wa-contact-name{font-size:13px;font-weight:700;}
+.wa-contact-sub{font-size:10px;color:var(--text2);}
+.wa-msgs{flex:1;overflow-y:auto;padding:12px;background:#e5ddd5;display:flex;flex-direction:column;gap:7px;min-height:200px;}
+.msg-bubble{max-width:75%;padding:7px 11px;border-radius:9px;font-size:12px;line-height:1.5;}
+.msg-bubble.recv{background:#fff;border-radius:0 9px 9px 9px;align-self:flex-start;}
+.msg-bubble.sent{background:#dcf8c6;border-radius:9px 9px 0 9px;align-self:flex-end;}
+.msg-time{font-size:9px;color:var(--text2);margin-top:2px;text-align:right;}
+.msg-date{text-align:center;font-size:10px;color:var(--text2);background:#e5ddd5;padding:2px 8px;border-radius:10px;align-self:center;}
+.wa-input-area{padding:8px 10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:7px;background:#f0f2f5;}
+.wa-input{flex:1;border:none;background:#fff;border-radius:20px;padding:8px 13px;font-size:12px;outline:none;font-family:'DM Sans',sans-serif;}
+.wa-send{width:34px;height:34px;background:#25d366;border-radius:50%;border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.wa-contact-item{padding:10px 13px;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:all 0.15s;}
+.wa-contact-item:hover,.wa-contact-item.active{background:#eff6ff;}
+
+/* PIPELINE */
+.pipeline{display:flex;flex-direction:column;gap:7px;}
+.pipe-item{display:flex;align-items:center;gap:9px;}
+.pipe-label{font-size:11px;color:var(--text2);width:110px;flex-shrink:0;}
+.pipe-bar-wrap{flex:1;background:#f1f5f9;border-radius:4px;height:7px;overflow:hidden;}
+.pipe-bar{height:100%;border-radius:4px;transition:width 1s ease;}
+.pipe-count{font-family:var(--num-font);font-size:12px;font-weight:700;color:var(--text);min-width:28px;text-align:right;}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;}
+.timeline-item{display:flex;gap:12px;padding-bottom:14px;position:relative;}
+.timeline-item::before{content:'';position:absolute;left:14px;top:30px;bottom:0;width:1px;background:var(--border);}
+.timeline-item:last-child::before{display:none;}
+.tl-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;}
+.tl-content{flex:1;}
+.tl-title{font-size:12px;font-weight:600;margin-bottom:1px;}
+.tl-sub{font-size:11px;color:var(--text2);}
+.tl-time{font-size:10px;color:var(--text2);margin-top:1px;}
+
+/* PROGRAMS */
+.programs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.prog-card{background:#fff;border-radius:12px;border:1px solid var(--border);overflow:hidden;transition:all 0.2s;cursor:pointer;}
+.prog-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px #0000001a;}
+.prog-top{height:70px;display:flex;align-items:center;justify-content:center;font-size:26px;}
+.prog-body{padding:13px;}
+.prog-name{font-size:13px;font-weight:700;margin-bottom:3px;}
+.prog-faculty{font-size:10px;color:var(--text2);margin-bottom:9px;}
+.prog-stats{display:flex;gap:10px;margin-bottom:10px;}
+.prog-stat-val{font-family:var(--num-font);font-size:18px;font-weight:700;letter-spacing:-0.5px;}
+.prog-stat-lbl{font-size:9px;color:var(--text2);}
+.prog-actions{display:flex;gap:5px;}
+.prog-btn{flex:1;padding:5px;border-radius:5px;border:1px solid var(--border);background:#f8fafc;font-size:10px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;color:var(--text2);transition:all 0.15s;}
+.prog-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* TEAM */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;}
+.agent-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:16px;text-align:center;transition:all 0.2s;}
+.agent-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px #0000001a;}
+.agent-av{width:52px;height:52px;border-radius:50%;margin:0 auto 9px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;}
+.agent-name{font-size:12px;font-weight:700;margin-bottom:1px;}
+.agent-role{font-size:10px;color:var(--text2);margin-bottom:9px;}
+.agent-stats{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px;}
+.agent-stat{background:#f8fafc;border-radius:6px;padding:5px;}
+.agent-stat-val{font-family:var(--num-font);font-size:15px;font-weight:700;letter-spacing:-0.5px;}
+.agent-stat-lbl{font-size:9px;color:var(--text2);}
+.efficiency-bar{height:5px;background:#f1f5f9;border-radius:3px;overflow:hidden;}
+.efficiency-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent3),#34d399);}
+
+/* INDICATORS */
+.ind-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+.ind-grid2{display:grid;grid-template-columns:2fr 1fr;gap:14px;}
+.semaforo{display:flex;flex-direction:column;gap:9px;}
+.sem-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;}
+.sem-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.sem-label{font-size:12px;font-weight:600;flex:1;}
+.sem-val{font-size:11px;font-weight:700;}
+
+/* TAGS */
+.tag-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;}
+.tag.rojo{background:#fef2f2;color:#dc2626;border-color:#fecaca;}
+.tag.amarillo{background:#fffbeb;color:#d97706;border-color:#fde68a;}
+.tag.verde{background:#f0fdf4;color:#16a34a;border-color:#bbf7d0;}
+.tag.azul{background:#eff6ff;color:#2563eb;border-color:#bfdbfe;}
+.tag.morado{background:#f5f3ff;color:#7c3aed;border-color:#ddd6fe;}
+.tag:hover{transform:scale(1.05);}
+
+/* CONFIG */
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.config-section{background:#fff;border-radius:12px;border:1px solid var(--border);padding:18px;}
+.config-title{font-size:13px;font-weight:700;margin-bottom:13px;display:flex;align-items:center;gap:7px;}
+.config-title i{color:var(--accent);}
+.form-group{margin-bottom:12px;}
+.form-label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;}
+.form-input{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;transition:all 0.15s;}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #1a3a8f12;}
+.form-select{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;background:#fff;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;}
+.toggle{width:36px;height:20px;background:#e2e8f0;border-radius:20px;cursor:pointer;position:relative;transition:all 0.2s;}
+.toggle.on{background:var(--accent3);}
+.toggle::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:2px;left:2px;transition:all 0.2s;box-shadow:0 1px 3px #00000030;}
+.toggle.on::after{left:18px;}
+
+/* EXPORT */
+.export-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.export-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:18px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.export-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.export-icon{font-size:32px;margin-bottom:9px;}
+.export-name{font-size:12px;font-weight:700;margin-bottom:3px;}
+.export-desc{font-size:10px;color:var(--text2);}
+
+/* GERENCIA */
+.ger-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.ger-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:20px;text-align:center;}
+.ger-val{font-family:var(--num-font);font-size:32px;font-weight:700;color:var(--accent);margin-bottom:4px;letter-spacing:-1px;}
+.ger-label{font-size:12px;color:var(--text2);font-weight:500;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:#00000055;z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-overlay.visible{display:flex;}
+.modal{background:#fff;border-radius:14px;padding:22px;width:90%;max-width:560px;max-height:88vh;overflow-y:auto;}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.modal-close{cursor:pointer;color:var(--text2);}
+.form-grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* SELECT INLINE */
+.inline-select{border:1px solid var(--border);border-radius:6px;padding:3px 7px;font-size:11px;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;background:#fff;}
+
+/* COORD VIEW */
+.coord-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:18px;}
+.coord-av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;margin-bottom:10px;}
+.coord-link{background:#f8fafc;border:1px solid var(--border);border-radius:7px;padding:8px 11px;font-size:11px;font-weight:600;color:var(--accent);word-break:break-all;margin-bottom:10px;}
+
+/* FILE LIST */
+.file-list{display:flex;flex-direction:column;gap:6px;}
+.file-item{display:flex;align-items:center;gap:9px;padding:8px 11px;background:#f8fafc;border-radius:7px;border:1px solid var(--border);}
+.file-item i{font-size:18px;color:var(--accent4);}
+.file-name{flex:1;font-size:12px;font-weight:600;}
+.file-size{font-size:10px;color:var(--text2);}
+.file-actions{display:flex;gap:5px;}
+
+/* STATUS DROPDOWN */
+.status-cell{position:relative;}
+.status-dropdown{position:absolute;top:100%;left:0;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px #0000001a;z-index:50;min-width:160px;padding:4px;display:none;}
+.status-dropdown.open{display:block;}
+.status-option{padding:6px 10px;font-size:11px;font-weight:600;border-radius:5px;cursor:pointer;transition:all 0.1s;}
+.status-option:hover{background:#f1f5f9;}
+
+/* NOTIFY */
+.notify{position:fixed;top:20px;right:20px;background:#1e293b;color:#fff;padding:10px 18px;border-radius:9px;font-size:12px;font-weight:600;z-index:999;opacity:0;transform:translateY(-10px);transition:all 0.3s;pointer-events:none;}
+.notify.show{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-badge">PG</div>
+    <div>
+      <div class="logo-name">Razón de Contactos</div>
+      <div class="logo-sub">Decanato de Postgrado · PUCMM</div>
+    </div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Principal</div>
+    <div class="nav-item active" onclick="showView('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Gestión de Prospectos</div>
+    <div class="nav-item" onclick="showView('contactos',this)"><i class="ti ti-users"></i> Contactos</div>
+    <div class="nav-item" onclick="showView('conversaciones',this)"><i class="ti ti-messages"></i> Conversaciones <span class="nav-badge">5</span></div>
+    <div class="nav-item" onclick="showView('actividades',this)"><i class="ti ti-calendar-check"></i> Actividades</div>
+    <div class="nav-item" onclick="showView('programas',this)"><i class="ti ti-school"></i> Programas de Interés</div>
+    <div class="nav-item" onclick="showView('formularios',this)"><i class="ti ti-forms"></i> Formularios Web</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Usuarios y Seguridad</div>
+    <div class="nav-item" onclick="showView('usuarios',this)"><i class="ti ti-user-cog"></i> Usuarios</div>
+    <div class="nav-item" onclick="showView('roles',this)"><i class="ti ti-shield-check"></i> Roles y Permisos</div>
+    <div class="nav-item" onclick="showView('equipos',this)"><i class="ti ti-users-group"></i> Equipos</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Organización</div>
+    <div class="nav-item" onclick="showView('etiquetas',this)"><i class="ti ti-tag"></i> Etiquetas</div>
+    <div class="nav-item" onclick="showView('fuentes',this)"><i class="ti ti-source-code"></i> Fuentes</div>
+    <div class="nav-item" onclick="showView('coordinadores',this)"><i class="ti ti-link"></i> Coordinadores</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Configuración</div>
+    <div class="nav-item" onclick="showView('config',this)"><i class="ti ti-settings"></i> Configuración General</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Reportes</div>
+    <div class="nav-item" onclick="showView('reportes',this)"><i class="ti ti-file-analytics"></i> Reportes</div>
+    <div class="nav-item" onclick="showView('indicadores',this)"><i class="ti ti-chart-dots"></i> Indicadores</div>
+    <div class="nav-item" onclick="showView('exportar',this)"><i class="ti ti-database-export"></i> Exportar Datos</div>
+    <div class="nav-item" onclick="showView('gerencia',this)"><i class="ti ti-presentation"></i> Vista Gerencia</div>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="user-av">GF</div>
+      <div>
+        <div class="user-name">Gabriel Ferreras</div>
+        <div class="user-role">Analista de Procesos</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div style="display:flex;flex-direction:column;">
+      <div class="topbar-title">Razón de Contactos — <span>Decanato de Postgrado</span></div>
+      <div id="gs-status" style="font-size:10px;color:#64748b;">⏳ Conectando con Google Sheets...</div>
+    </div>
+    <div class="search-bar"><i class="ti ti-search" style="color:#94a3b8;font-size:14px;"></i><input placeholder="Buscar contacto..."/></div>
+    <div style="display:flex;align-items:center;gap:7px;">
+      <button class="wa-btn-top" onclick="showView('conversaciones',null)"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>
+      <div class="tb-btn"><i class="ti ti-bell" style="font-size:15px;"></i><div class="notif-dot"></div></div>
+      <div class="user-topbar">
+        <div class="user-topbar-av">GF</div>
+        <span style="font-size:11px;font-weight:600;">Gabriel F.</span>
+        <i class="ti ti-chevron-down" style="font-size:11px;color:#64748b;"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="view active" id="view-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card" style="cursor:pointer;" onclick="showView('contactos',null)"><div class="stat-icon blue"><i class="ti ti-users"></i></div><div class="stat-label">Contactos Totales</div><div class="stat-value" id="stat-total">0</div><div class="stat-change up" id="stat-total-sub">—</div></div>
+        <div class="stat-card" style="cursor:pointer;" onclick="filtrarContactos('admitido',document.querySelector('.filter-btn'));showView('contactos',null)"><div class="stat-icon gold"><i class="ti ti-user-check"></i></div><div class="stat-label">Prospectos Admitidos</div><div class="stat-value" id="stat-admitidos">0</div><div class="stat-change up" id="stat-adm-sub">—</div></div>
+        <div class="stat-card" style="cursor:pointer;" onclick="filtrarContactos('proceso',document.querySelector('.filter-btn'));showView('contactos',null)"><div class="stat-icon green"><i class="ti ti-file-check"></i></div><div class="stat-label">Aplicaciones en Proceso</div><div class="stat-value" id="stat-proceso">0</div><div class="stat-change up" id="stat-proc-sub">—</div></div>
+        <div class="stat-card" style="cursor:pointer;" onclick="filtrarContactos('listo',document.querySelector('.filter-btn'));showView('contactos',null)"><div class="stat-icon purple"><i class="ti ti-clipboard-check"></i></div><div class="stat-label">Listos para Inscripción</div><div class="stat-value" id="stat-listos">0</div><div class="stat-change up" id="stat-list-sub">—</div></div>
+        <div class="stat-card" style="cursor:pointer;" onclick="filtrarContactos('interesado',document.querySelector('.filter-btn'));showView('contactos',null)"><div class="stat-icon red"><i class="ti ti-chart-bar"></i></div><div class="stat-label">Interesados</div><div class="stat-value" id="stat-interesados">0</div><div class="stat-change up" id="stat-int-sub">—</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 360px;gap:14px;margin-bottom:14px;">
+        <!-- Contactos recientes -->
+        <div class="card" style="grid-column:span 2;">
+          <div class="card-header">
+            <div class="card-title">Contactos Recientes</div>
+            <div style="display:flex;gap:7px;">
+              <button class="btn-primary btn-sm" onclick="showModal('add-contact')"><i class="ti ti-plus"></i> Agregar</button>
+              <button class="btn-secondary btn-sm" onclick="showView('contactos',null)">Ver todos</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nombre</th><th>Teléfono</th><th>Programa</th><th>Fuente</th><th>Estado</th><th>Último contacto</th><th></th></tr></thead>
+              <tbody id="dash-contacts-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- WhatsApp mini -->
+        <div class="card" style="display:flex;flex-direction:column;">
+          <div class="wa-header" style="flex-shrink:0;">
+            <div class="avatar-sm" style="background:#1a3a8f;width:32px;height:32px;font-size:10px;">CP</div>
+            <div><div class="wa-contact-name" style="font-size:12px;">Carlos Pérez</div><div class="wa-contact-sub">MBA Ejecutivo</div></div>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:4px;font-size:10px;color:#10b981;"><span style="width:6px;height:6px;background:#10b981;border-radius:50%;display:inline-block;"></span>En línea</div>
+          </div>
+          <div class="wa-msgs" style="flex:1;min-height:160px;">
+            <div class="msg-date">Hoy</div>
+            <div class="msg-bubble recv">Hola, estoy interesado en el MBA Ejecutivo.<div class="msg-time">10:30 AM</div></div>
+            <div class="msg-bubble sent">¡Hola Carlos! Con mucho gusto le enviamos información completa.<div class="msg-time">10:31 AM ✓✓</div></div>
+            <div class="msg-bubble recv">Muchas gracias, ¿cuándo inicia el próximo ciclo?<div class="msg-time">10:35 AM</div></div>
+            <div class="msg-bubble sent">El próximo ciclo inicia en agosto. ¿Le gustaría agendar una orientación?<div class="msg-time">10:36 AM ✓✓</div></div>
+          </div>
+          <div class="wa-input-area">
+            <input class="wa-input" placeholder="Escribe un mensaje..." id="dash-wa-input"/>
+            <button class="wa-send" onclick="sendWAMsg('dash')"><i class="ti ti-send" style="font-size:14px;"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <!-- Pipeline -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">Pipeline de Admisión</div><span style="font-size:11px;color:#64748b;">Tasa conversión: <strong>7.7%</strong></span></div>
+          <div class="card-body">
+            <div class="pipeline">
+              <div class="pipe-item"><span class="pipe-label">Nuevo Contacto</span><div class="pipe-bar-wrap"><div class="pipe-bar" style="width:100%;background:#3b82f6;"></div></div><span class="pipe-count">312</span></div>
+              <div class="pipe-item"><span class="pipe-label">Contactado</span><div class="pipe-bar-wrap"><div class="pipe-bar" style="width:58%;background:#8b5cf6;"></div></div><span class="pipe-count">180</span></div>
+              <div class="pipe-item"><span class="pipe-label">Interesado</span><div class="pipe-bar-wrap"><div class="pipe-bar" style="width:28%;background:#f59e0b;"></div></div><span class="pipe-count">86</span></div>
+              <div class="pipe-item"><span class="pipe-label">Docs Pendientes</span><div class="pipe-bar-wrap"><div class="pipe-bar" style="width:15%;background:#ef4444;"></div></div><span class="pipe-count">45</span></div>
+              <div class="pipe-item"><span class="pipe-label">Aplic. Completa</span><div class="pipe-bar-wrap"><div class="pipe-bar" style="width:8%;background:#10b981;"></div></div><span class="pipe-count">24</span></div>
+              <div class="pipe-item"><span class="pipe-label">Admitido</span><div class="pipe-bar-wrap"><div class="pipe-bar" style="width:4%;background:#059669;"></div></div><span class="pipe-count">12</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actividades pendientes - live -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Actividades Pendientes</div>
+            <span style="font-size:10px;color:#64748b;" id="act-update-time">Actualizado ahora</span>
+          </div>
+          <div class="card-body" style="padding:12px;" id="activities-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONTACTOS ══ -->
+    <div class="view" id="view-contactos">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div><h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;">Contactos</h2><p style="font-size:11px;color:#64748b;" id="contacts-count">Cargando...</p></div>
+        <div style="display:flex;gap:7px;">
+          <button class="btn-secondary btn-sm" onclick="descargarPlantilla()"><i class="ti ti-download"></i> Plantilla Excel</button>
+          <button class="btn-secondary btn-sm" onclick="document.getElementById('import-excel').click()"><i class="ti ti-upload"></i> Importar Excel</button>
+          <input type="file" id="import-excel" accept=".xlsx,.xls" style="display:none" onchange="importarExcel(event)"/>
+          <button class="btn-primary btn-sm" onclick="showModal('add-contact')"><i class="ti ti-plus"></i> Nuevo Contacto</button>
+        </div>
+      </div>
+      <div class="filters-bar" id="status-filters">
+        <span style="font-size:11px;font-weight:600;color:#64748b;">Estado:</span>
+        <button class="filter-btn active" onclick="filtrarContactos('todos',this)">Todos</button>
+        <button class="filter-btn" onclick="filtrarContactos('nuevo',this)"><span style="width:8px;height:8px;background:#3b82f6;border-radius:50%;display:inline-block;"></span>Nuevo</button>
+        <button class="filter-btn" onclick="filtrarContactos('contactado',this)"><span style="width:8px;height:8px;background:#10b981;border-radius:50%;display:inline-block;"></span>Contactado</button>
+        <button class="filter-btn" onclick="filtrarContactos('interesado',this)"><span style="width:8px;height:8px;background:#f59e0b;border-radius:50%;display:inline-block;"></span>Interesado</button>
+        <button class="filter-btn" onclick="filtrarContactos('proceso',this)"><span style="width:8px;height:8px;background:#8b5cf6;border-radius:50%;display:inline-block;"></span>En Proceso</button>
+        <button class="filter-btn" onclick="filtrarContactos('admitido',this)"><span style="width:8px;height:8px;background:#059669;border-radius:50%;display:inline-block;"></span>Admitido</button>
+        <button class="filter-btn" onclick="filtrarContactos('listo',this)"><span style="width:8px;height:8px;background:#1d4ed8;border-radius:50%;display:inline-block;"></span>Listo Inscripción</button>
+        <button class="filter-btn" onclick="filtrarContactos('nointeresado',this)"><span style="width:8px;height:8px;background:#ef4444;border-radius:50%;display:inline-block;"></span>No Interesado</button>
+        <div class="search-bar" style="margin-left:auto;width:180px;"><i class="ti ti-search" style="font-size:13px;color:#94a3b8;"></i><input placeholder="Buscar..." oninput="buscarContacto(this.value)"/></div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nombre</th><th>Teléfono</th><th>Programa</th><th>Estado</th><th>Etiqueta</th><th>Fuente</th><th>Asesor</th><th>Último contacto</th><th>Acciones</th></tr></thead>
+            <tbody id="contacts-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONVERSACIONES ══ -->
+    <div class="view" id="view-conversaciones">
+      <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;margin-bottom:14px;">Conversaciones WhatsApp</h2>
+      <div class="card" style="display:flex;height:calc(100vh - 160px);">
+        <div class="wa-contact-list">
+          <div style="padding:10px;border-bottom:1px solid var(--border);">
+            <div class="search-bar"><i class="ti ti-search" style="font-size:13px;color:#94a3b8;"></i><input placeholder="Buscar..."/></div>
+          </div>
+          <div id="wa-contact-list-items"></div>
+        </div>
+        <div class="wa-chat-area">
+          <div class="wa-header">
+            <div class="avatar-sm" style="width:36px;height:36px;font-size:12px;" id="wa-chat-av">CP</div>
+            <div>
+              <div class="wa-contact-name" id="wa-chat-name">Carlos Pérez</div>
+              <div class="wa-contact-sub" id="wa-chat-sub">MBA Ejecutivo · Interesado</div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:7px;">
+              <button class="btn-secondary btn-sm" onclick="showContactDetail(0)"><i class="ti ti-user"></i> Ver ficha</button>
+            </div>
+          </div>
+          <div class="wa-msgs" id="wa-msgs-area"></div>
+          <div class="wa-input-area">
+            <button style="background:none;border:none;color:#64748b;font-size:18px;cursor:pointer;">😊</button>
+            <input class="wa-input" placeholder="Escribe un mensaje..." id="conv-wa-input" onkeydown="if(event.key==='Enter')sendWAMsg('conv')"/>
+            <button style="background:none;border:none;color:#64748b;font-size:16px;cursor:pointer;"><i class="ti ti-paperclip"></i></button>
+            <button class="wa-send" onclick="sendWAMsg('conv')"><i class="ti ti-send" style="font-size:13px;"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ACTIVIDADES ══ -->
+    <div class="view" id="view-actividades">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;">Actividades</h2>
+        <button class="btn-primary btn-sm" onclick="showModal('add-activity')"><i class="ti ti-plus"></i> Nueva Actividad</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;">
+        <div class="stat-card blue"><div class="stat-icon blue"><i class="ti ti-phone"></i></div><div class="stat-label">Llamadas Hoy</div><div class="stat-value">12</div></div>
+        <div class="stat-card green"><div class="stat-icon green"><i class="ti ti-send"></i></div><div class="stat-label">Mensajes Enviados</div><div class="stat-value">47</div></div>
+        <div class="stat-card gold"><div class="stat-icon gold"><i class="ti ti-calendar"></i></div><div class="stat-label">Reuniones</div><div class="stat-value">5</div></div>
+        <div class="stat-card purple"><div class="stat-icon purple"><i class="ti ti-check"></i></div><div class="stat-label">Completadas</div><div class="stat-value">38</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Todas las Actividades</div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Actividad</th><th>Contacto</th><th>Programa</th><th>Tipo</th><th>Fecha</th><th>Asesor</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td>Llamar para seguimiento</td><td>Carlos Pérez</td><td>MBA Ejecutivo</td><td><span class="badge nuevo">Llamada</span></td><td>Hoy 11:00 AM</td><td>Cecilia Almonte</td><td><span class="badge interesado">Pendiente</span></td></tr>
+              <tr><td>Enviar información</td><td>Ana García</td><td>Maestría Finanzas</td><td><span class="badge contactado">Mensaje</span></td><td>Hoy 12:00 PM</td><td>Paola Ozuna</td><td><span class="badge interesado">Pendiente</span></td></tr>
+              <tr><td>Reunión virtual</td><td>José Fernández</td><td>MBA Ejecutivo</td><td><span class="badge proceso">Reunión</span></td><td>Mañana 2:00 PM</td><td>Gabriel Ferreras</td><td><span class="badge nuevo">Programada</span></td></tr>
+              <tr><td>Revisión de documentos</td><td>María Rodríguez</td><td>Educación Superior</td><td><span class="badge admitido">Revisión</span></td><td>30/05/2025</td><td>Marieliza Romero</td><td><span class="badge contactado">Completada</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PROGRAMAS ══ -->
+    <div class="view" id="view-programas">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;">Programas de Interés</h2>
+        <button class="btn-primary btn-sm" onclick="showModal('add-program')"><i class="ti ti-plus"></i> Agregar Programa</button>
+      </div>
+      <div class="programs-grid" id="programs-grid"></div>
+    </div>
+
+    <!-- ══ FORMULARIOS ══ -->
+    <div class="view" id="view-formularios">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;">Formularios Web</h2>
+        <div style="display:flex;gap:7px;">
+          <button class="btn-secondary btn-sm" style="color:#ef4444;border-color:#fecaca;" onclick="eliminarFormulario()"><i class="ti ti-trash"></i> Eliminar</button>
+          <button class="btn-primary btn-sm" onclick="showModal('add-form')"><i class="ti ti-plus"></i> Nuevo Formulario</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        <div class="card" style="padding:18px;">
+          <div style="font-size:26px;margin-bottom:9px;">📋</div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Formulario de Interés MBA</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:12px;">145 respuestas · MBA Ejecutivo</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <a href="https://forms.office.com" target="_blank" style="text-decoration:none;"><button class="btn-primary btn-sm" style="width:100%;justify-content:center;"><i class="ti ti-external-link"></i> Abrir Formulario</button></a>
+            <button class="btn-secondary btn-sm" style="width:100%;justify-content:center;" onclick="copiarLink('https://forms.office.com/mba')"><i class="ti ti-copy"></i> Copiar Link</button>
+            <button class="btn-secondary btn-sm" style="width:100%;justify-content:center;"><i class="ti ti-send"></i> Enviar por WhatsApp</button>
+          </div>
+        </div>
+        <div class="card" style="padding:18px;">
+          <div style="font-size:26px;margin-bottom:9px;">📝</div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Solicitud de Información General</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:12px;">89 respuestas · General</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <a href="https://forms.office.com" target="_blank" style="text-decoration:none;"><button class="btn-primary btn-sm" style="width:100%;justify-content:center;"><i class="ti ti-external-link"></i> Abrir Formulario</button></a>
+            <button class="btn-secondary btn-sm" style="width:100%;justify-content:center;" onclick="copiarLink('https://forms.office.com/info')"><i class="ti ti-copy"></i> Copiar Link</button>
+            <button class="btn-secondary btn-sm" style="width:100%;justify-content:center;"><i class="ti ti-send"></i> Enviar por WhatsApp</button>
+          </div>
+        </div>
+        <div class="card" style="padding:18px;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;min-height:180px;">
+          <div style="text-align:center;color:#94a3b8;"><div style="font-size:32px;margin-bottom:7px;">+</div><div style="font-size:12px;font-weight:600;">Agregar Formulario</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ USUARIOS ══ -->
+    <div class="view" id="view-usuarios">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;">Usuarios del Sistema</h2>
+        <button class="btn-primary btn-sm" onclick="showModal('add-user')"><i class="ti ti-plus"></i> Agregar Usuario</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nombre</th><th>Cargo</th><th>Rol</th><th>Contactos Asignados</th><th>Estado</th><th>Último Acceso</th><th>Acciones</th></tr></thead>
+            <tbody>
+              <tr><td><div class="flex-center"><div class="avatar-sm" style="background:#1a3a8f;">CA</div>Cecilia María Almonte Andújar</div></td><td>Asistente Técnica de Servicios</td><td><span class="badge contactado">Asesora</span></td><td>125</td><td><span class="badge admitido">Activo</span></td><td>Hoy 10:30</td><td><button class="btn-secondary btn-sm">Editar</button></td></tr>
+              <tr><td><div class="flex-center"><div class="avatar-sm" style="background:#10b981;">PO</div>Paola Esther Ozuna Díaz</div></td><td>Encargada de Procesos Académicos</td><td><span class="badge contactado">Asesora</span></td><td>118</td><td><span class="badge admitido">Activo</span></td><td>Hoy 09:15</td><td><button class="btn-secondary btn-sm">Editar</button></td></tr>
+              <tr><td><div class="flex-center"><div class="avatar-sm" style="background:#8b5cf6;">GF</div>Gabriel Ferreras</div></td><td>Analista de Procesos</td><td><span class="badge proceso">Admin</span></td><td>—</td><td><span class="badge admitido">Activo</span></td><td>Hoy 08:00</td><td><button class="btn-secondary btn-sm">Editar</button></td></tr>
+              <tr><td><div class="flex-center"><div class="avatar-sm" style="background:#c8972a;">MR</div>Marieliza Romero</div></td><td>Asistente de Dirección Académica</td><td><span class="badge interesado">Coordinadora</span></td><td>—</td><td><span class="badge admitido">Activo</span></td><td>Hoy 09:45</td><td><button class="btn-secondary btn-sm">Editar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ROLES ══ -->
+    <div class="view" id="view-roles">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;">Roles y Permisos</h2>
+        <button class="btn-primary btn-sm"><i class="ti ti-plus"></i> Nuevo Rol</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        <div class="card" style="padding:18px;"><div style="font-size:22px;margin-bottom:7px;">🛡️</div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Administrador</div><div style="font-size:11px;color:#64748b;margin-bottom:10px;">Acceso total</div><div style="display:flex;flex-direction:column;gap:5px;"><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-check" style="color:#10b981;"></i>Ver todos los contactos</div><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-check" style="color:#10b981;"></i>Gestionar usuarios</div><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-check" style="color:#10b981;"></i>Exportar datos</div><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-check" style="color:#10b981;"></i>Configuración general</div></div></div>
+        <div class="card" style="padding:18px;"><div style="font-size:22px;margin-bottom:7px;">👤</div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Asesora Comercial</div><div style="font-size:11px;color:#64748b;margin-bottom:10px;">Sus contactos asignados</div><div style="display:flex;flex-direction:column;gap:5px;"><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-check" style="color:#10b981;"></i>Ver sus contactos</div><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-check" style="color:#10b981;"></i>Enviar WhatsApp</div><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-x" style="color:#ef4444;"></i>Gestionar usuarios</div><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-x" style="color:#ef4444;"></i>Exportar datos</div></div></div>
+        <div class="card" style="padding:18px;"><div style="font-size:22px;margin-bottom:7px;">👁️</div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Coordinador</div><div style="font-size:11px;color:#64748b;margin-bottom:10px;">Vista de indicadores</div><div style="display:flex;flex-direction:column;gap:5px;"><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-check" style="color:#10b981;"></i>Ver indicadores</div><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-check" style="color:#10b981;"></i>Ver contactos de su programa</div><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-x" style="color:#ef4444;"></i>Modificar datos</div><div style="font-size:11px;display:flex;align-items:center;gap:5px;"><i class="ti ti-x" style="color:#ef4444;"></i>Enviar mensajes</div></div></div>
+      </div>
+    </div>
+
+    <!-- ══ EQUIPOS ══ -->
+    <div class="view" id="view-equipos">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;">Equipo — Decanato de Postgrado</h2>
+      </div>
+      <div class="team-grid">
+        <div class="agent-card"><div class="agent-av" style="background:linear-gradient(135deg,#1a3a8f,#2563eb);">CA</div><div class="agent-name">Cecilia María Almonte Andújar</div><div class="agent-role">Asistente Técnica de Servicios</div><div class="agent-stats"><div class="agent-stat"><div class="agent-stat-val" style="color:#1a3a8f;">125</div><div class="agent-stat-lbl">Contactos</div></div><div class="agent-stat"><div class="agent-stat-val" style="color:#10b981;">18</div><div class="agent-stat-lbl">Admitidos</div></div></div><div style="font-size:10px;color:#64748b;margin-bottom:5px;">Eficiencia: 87%</div><div class="efficiency-bar"><div class="efficiency-fill" style="width:87%;"></div></div><div style="font-size:9px;color:#64748b;margin-top:5px;">Último trabajo: Hoy 10:33 AM</div></div>
+        <div class="agent-card"><div class="agent-av" style="background:linear-gradient(135deg,#10b981,#059669);">PO</div><div class="agent-name">Paola Esther Ozuna Díaz</div><div class="agent-role">Encargada de Procesos Académicos</div><div class="agent-stats"><div class="agent-stat"><div class="agent-stat-val" style="color:#1a3a8f;">118</div><div class="agent-stat-lbl">Contactos</div></div><div class="agent-stat"><div class="agent-stat-val" style="color:#10b981;">14</div><div class="agent-stat-lbl">Admitidos</div></div></div><div style="font-size:10px;color:#64748b;margin-bottom:5px;">Eficiencia: 79%</div><div class="efficiency-bar"><div class="efficiency-fill" style="width:79%;"></div></div><div style="font-size:9px;color:#64748b;margin-top:5px;">Último trabajo: Hoy 09:15 AM</div></div>
+        <div class="agent-card"><div class="agent-av" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);">GF</div><div class="agent-name">Gabriel Ferreras</div><div class="agent-role">Analista de Procesos</div><div class="agent-stats"><div class="agent-stat"><div class="agent-stat-val" style="color:#1a3a8f;">—</div><div class="agent-stat-lbl">Contactos</div></div><div class="agent-stat"><div class="agent-stat-val" style="color:#10b981;">—</div><div class="agent-stat-lbl">Admitidos</div></div></div><div style="font-size:10px;color:#64748b;margin-bottom:5px;">Administrador</div><div class="efficiency-bar"><div class="efficiency-fill" style="width:100%;"></div></div><div style="font-size:9px;color:#64748b;margin-top:5px;">Último trabajo: Hoy 08:00 AM</div></div>
+        <div class="agent-card"><div class="agent-av" style="background:linear-gradient(135deg,#c8972a,#e8b84b);">MR</div><div class="agent-name">Marieliza Romero</div><div class="agent-role">Asistente de Dirección Académica</div><div class="agent-stats"><div class="agent-stat"><div class="agent-stat-val" style="color:#1a3a8f;">—</div><div class="agent-stat-lbl">Contactos</div></div><div class="agent-stat"><div class="agent-stat-val" style="color:#10b981;">—</div><div class="agent-stat-lbl">Admitidos</div></div></div><div style="font-size:10px;color:#64748b;margin-bottom:5px;">Dirección</div><div class="efficiency-bar"><div class="efficiency-fill" style="width:95%;background:linear-gradient(90deg,#c8972a,#e8b84b);"></div></div><div style="font-size:9px;color:#64748b;margin-top:5px;">Último trabajo: Hoy 09:45 AM</div></div>
+      </div>
+    </div>
+
+    <!-- ══ ETIQUETAS ══ -->
+    <div class="view" id="view-etiquetas">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;">Etiquetas</h2>
+        <button class="btn-primary btn-sm"><i class="ti ti-plus"></i> Nueva Etiqueta</button>
+      </div>
+      <div class="tag-grid">
+        <span class="tag rojo" onclick="filtrarEtiqueta('Urgente')"><i class="ti ti-alert-circle"></i> Urgente (23)</span>
+        <span class="tag amarillo" onclick="filtrarEtiqueta('Seguimiento')"><i class="ti ti-clock"></i> Seguimiento (45)</span>
+        <span class="tag verde" onclick="filtrarEtiqueta('Listo')"><i class="ti ti-check"></i> Listo para Inscripción (12)</span>
+        <span class="tag azul" onclick="filtrarEtiqueta('VIP')"><i class="ti ti-star"></i> VIP (8)</span>
+        <span class="tag morado" onclick="filtrarEtiqueta('Docs')"><i class="ti ti-file"></i> Docs Pendientes (31)</span>
+        <span class="tag rojo" onclick="filtrarEtiqueta('NoInt')"><i class="ti ti-x"></i> No Interesado (15)</span>
+        <span class="tag amarillo" onclick="filtrarEtiqueta('Reconsiderar')"><i class="ti ti-refresh"></i> Reconsiderar (9)</span>
+        <span class="tag verde" onclick="filtrarEtiqueta('Beca')"><i class="ti ti-coin"></i> Beca Solicitada (6)</span>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title" id="etiqueta-title">Todos los contactos con etiqueta</div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nombre</th><th>Programa</th><th>Estado</th><th>Etiqueta</th><th>Asesor</th><th>Acciones</th></tr></thead>
+            <tbody id="etiqueta-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FUENTES ══ -->
+    <div class="view" id="view-fuentes">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;">Fuentes de Contactos</h2>
+        <button class="btn-primary btn-sm" onclick="showModal('add-fuente')"><i class="ti ti-plus"></i> Agregar Fuente</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Distribución por Fuente</div></div>
+          <div class="card-body"><canvas id="chart-fuentes" height="220"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Fuentes Configuradas</div></div>
+          <div class="card-body" style="padding:12px;">
+            <div id="fuentes-list"></div>
+            <button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px;" onclick="showModal('add-fuente')"><i class="ti ti-plus"></i> Agregar Fuente</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ COORDINADORES ══ -->
+    <div class="view" id="view-coordinadores">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;">Coordinadores de Programa</h2>
+        <button class="btn-primary btn-sm" onclick="showModal('add-coord')"><i class="ti ti-plus"></i> Agregar Coordinador</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" id="coord-grid"></div>
+    </div>
+
+    <!-- ══ CONFIG ══ -->
+    <div class="view" id="view-config">
+      <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;margin-bottom:14px;">Configuración General</h2>
+      <div class="config-grid">
+        <div class="config-section"><div class="config-title"><i class="ti ti-building"></i> Información Institucional</div><div class="form-group"><label class="form-label">Nombre de la Institución</label><input class="form-input" value="Pontificia Universidad Católica Madre y Maestra"/></div><div class="form-group"><label class="form-label">Departamento</label><input class="form-input" value="Decanato de Postgrado"/></div><div class="form-group"><label class="form-label">Correo institucional</label><input class="form-input" value="postgrado@pucmm.edu.do"/></div><button class="btn-primary" style="width:100%;justify-content:center;">Guardar Cambios</button></div>
+        <div class="config-section"><div class="config-title"><i class="ti ti-brand-whatsapp"></i> WhatsApp Business</div><div class="form-group"><label class="form-label">Número WhatsApp</label><input class="form-input" value="+1 809 000-0000"/></div><div class="form-group"><label class="form-label">API Key</label><input class="form-input" type="password" value="••••••••••••"/></div><div style="display:flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid #bbf7d0;border-radius:7px;background:#f0fdf4;margin-bottom:10px;"><span style="width:7px;height:7px;background:#10b981;border-radius:50%;display:inline-block;"></span><span style="font-size:12px;color:#15803d;font-weight:600;">Conectado</span></div><button class="btn-primary" style="width:100%;justify-content:center;">Actualizar</button></div>
+        <div class="config-section"><div class="config-title"><i class="ti ti-adjustments"></i> Preferencias</div><div class="toggle-row"><span style="font-size:12px;">Notificaciones nuevos contactos</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><div class="toggle-row"><span style="font-size:12px;">Asignación automática</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><div class="toggle-row"><span style="font-size:12px;">Recordatorios seguimiento</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><div class="toggle-row"><span style="font-size:12px;">Integración SharePoint</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><div class="toggle-row"><span style="font-size:12px;">Reportes automáticos semanales</span><div class="toggle" onclick="this.classList.toggle('on')"></div></div></div>
+        <div class="config-section"><div class="config-title"><i class="ti ti-database"></i> SharePoint & Datos</div><div class="form-group"><label class="form-label">URL SharePoint</label><input class="form-input" value="https://pucmm.sharepoint.com/sites/postgrado"/></div><div class="form-group"><label class="form-label">Lista de Contactos</label><select class="form-select"><option>Contactos_CRM</option><option>Prospectos_2025</option></select></div><div style="display:flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid #bbf7d0;border-radius:7px;background:#f0fdf4;margin-bottom:10px;"><span style="width:7px;height:7px;background:#10b981;border-radius:50%;display:inline-block;"></span><span style="font-size:12px;color:#15803d;font-weight:600;">Sync: Hoy 10:00 AM</span></div><button class="btn-primary" style="width:100%;justify-content:center;"><i class="ti ti-refresh"></i> Sincronizar</button></div>
+      </div>
+    </div>
+
+    <!-- ══ REPORTES ══ -->
+    <div class="view" id="view-reportes">
+      <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;margin-bottom:14px;">Reportes</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div class="card"><div class="card-header"><div class="card-title">Contactos por Programa</div></div><div class="card-body"><canvas id="chart-programas" height="200"></canvas></div></div>
+        <div class="card"><div class="card-header"><div class="card-title">Estado de Contactos</div></div><div class="card-body"><canvas id="chart-estados" height="200"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Todos los Contactos</div><button class="btn-secondary btn-sm" onclick="exportarContactos()"><i class="ti ti-download"></i> Exportar Excel</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Teléfono</th><th>Programa</th><th>Estado</th><th>Asesor</th><th>Fuente</th><th>Fecha</th></tr></thead><tbody id="reportes-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ══ INDICADORES ══ -->
+    <div class="view" id="view-indicadores">
+      <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;margin-bottom:14px;">Indicadores</h2>
+      <div class="ind-grid">
+        <div class="card"><div class="card-header"><div class="card-title">Pipeline por Estado</div></div><div class="card-body"><canvas id="chart-flujo" height="160"></canvas></div></div>
+        <div class="card"><div class="card-header"><div class="card-title">Top 5 Programas</div></div><div class="card-body"><canvas id="chart-mes" height="160"></canvas></div></div>
+        <div class="card"><div class="card-header"><div class="card-title">Semáforo por Programa</div></div>
+          <div class="card-body"><div class="semaforo">
+            <div class="sem-item" style="background:#f0fdf4;"><div class="sem-dot" style="background:#10b981;"></div><div><div class="sem-label">MBA Ejecutivo</div><div style="font-size:10px;color:#64748b;">Conv. 35%</div></div><div class="sem-val" style="color:#10b981;">✅ Óptimo</div></div>
+            <div class="sem-item" style="background:#fffbeb;"><div class="sem-dot" style="background:#f59e0b;"></div><div><div class="sem-label">Maestría Finanzas</div><div style="font-size:10px;color:#64748b;">Conv. 18%</div></div><div class="sem-val" style="color:#f59e0b;">⚠️ Regular</div></div>
+            <div class="sem-item" style="background:#fef2f2;"><div class="sem-dot" style="background:#ef4444;"></div><div><div class="sem-label">Psicología Org.</div><div style="font-size:10px;color:#64748b;">Conv. 8%</div></div><div class="sem-val" style="color:#ef4444;">🔴 Bajo</div></div>
+            <div class="sem-item" style="background:#f0fdf4;"><div class="sem-dot" style="background:#10b981;"></div><div><div class="sem-label">Maestría Derecho</div><div style="font-size:10px;color:#64748b;">Conv. 28%</div></div><div class="sem-val" style="color:#10b981;">✅ Óptimo</div></div>
+          </div></div>
+        </div>
+      </div>
+      <div class="ind-grid2">
+        <div class="card"><div class="card-header"><div class="card-title">Contactos por Asesor</div></div><div class="card-body"><canvas id="chart-asesores" height="180"></canvas></div></div>
+        <div class="card"><div class="card-header"><div class="card-title">Métricas Clave</div></div>
+          <div class="card-body"><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+            <div style="background:#eff6ff;border-radius:9px;padding:13px;text-align:center;"><div style="font-family:var(--num-font);font-size:20px;font-weight:700;color:#1a3a8f;letter-spacing:-0.5px;">7.7%</div><div style="font-size:10px;color:#64748b;">Tasa Conversión</div></div>
+            <div style="background:#f0fdf4;border-radius:9px;padding:13px;text-align:center;"><div style="font-family:var(--num-font);font-size:20px;font-weight:700;color:#10b981;letter-spacing:-0.5px;">3.2d</div><div style="font-size:10px;color:#64748b;">Tiempo Respuesta</div></div>
+            <div style="background:#fffbeb;border-radius:9px;padding:13px;text-align:center;"><div style="font-family:var(--num-font);font-size:20px;font-weight:700;color:#d97706;letter-spacing:-0.5px;">4.8</div><div style="font-size:10px;color:#64748b;">Contactos/día</div></div>
+            <div style="background:#f5f3ff;border-radius:9px;padding:13px;text-align:center;"><div style="font-family:var(--num-font);font-size:20px;font-weight:700;color:#7c3aed;letter-spacing:-0.5px;">82%</div><div style="font-size:10px;color:#64748b;">Satisfacción</div></div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ EXPORTAR ══ -->
+    <div class="view" id="view-exportar">
+      <h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;margin-bottom:14px;">Exportar Datos</h2>
+      <div class="export-grid">
+        <div class="export-card" onclick="exportarContactos()"><div class="export-icon">📊</div><div class="export-name">Todos los Contactos</div><div class="export-desc">Excel con todos los campos</div><button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px;"><i class="ti ti-download"></i> Descargar</button></div>
+        <div class="export-card"><div class="export-icon">🎓</div><div class="export-name">Por Programa</div><div class="export-desc">Filtrado por programa</div><button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px;"><i class="ti ti-download"></i> Descargar</button></div>
+        <div class="export-card"><div class="export-icon">👤</div><div class="export-name">Por Asesor</div><div class="export-desc">Contactos de cada asesor</div><button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px;"><i class="ti ti-download"></i> Descargar</button></div>
+        <div class="export-card"><div class="export-icon">📈</div><div class="export-name">Indicadores PDF</div><div class="export-desc">KPIs y métricas</div><button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px;"><i class="ti ti-download"></i> Descargar</button></div>
+        <div class="export-card"><div class="export-icon">💬</div><div class="export-name">Historial Conversaciones</div><div class="export-desc">Seguimiento completo</div><button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px;"><i class="ti ti-download"></i> Descargar</button></div>
+        <div class="export-card"><div class="export-icon">🗂️</div><div class="export-name">Exportar a SharePoint</div><div class="export-desc">Sincronizar con listas SP</div><button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px;background:#0078d4;"><i class="ti ti-refresh"></i> Sincronizar</button></div>
+      </div>
+    </div>
+
+    <!-- ══ GERENCIA ══ -->
+    <div class="view" id="view-gerencia">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+        <div><h2 style="font-size:16px;font-weight:700;font-family:'Playfair Display',serif;">Vista Gerencia</h2><p style="font-size:11px;color:#64748b;">Dashboard ejecutivo — Solo lectura</p></div>
+        <button class="btn-secondary btn-sm" onclick="window.print()"><i class="ti ti-printer"></i> Imprimir</button>
+      </div>
+      <div class="ger-stats">
+        <div class="ger-card"><div class="ger-val" id="ger-stat-total">0</div><div class="ger-label">Total Contactos</div></div>
+        <div class="ger-card"><div class="ger-val" style="color:#10b981;" id="ger-stat-adm">0</div><div class="ger-label">Admitidos</div></div>
+        <div class="ger-card"><div class="ger-val" style="color:#f59e0b;" id="ger-stat-proc">0</div><div class="ger-label">En Proceso</div></div>
+        <div class="ger-card"><div class="ger-val" style="color:#ef4444;" id="ger-stat-conv">0%</div><div class="ger-label">Tasa Conversión</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="card"><div class="card-header"><div class="card-title">Estado por Programa</div></div><div class="card-body"><canvas id="chart-ger" height="200"></canvas></div></div>
+        <div class="card"><div class="card-header"><div class="card-title">Resumen por Programa</div></div>
+          <div class="card-body"><div style="display:flex;flex-direction:column;gap:8px;" id="ger-resumen"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title"><span id="modal-title-text">Nuevo Registro</span><span class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></span></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- NOTIFY -->
+<div class="notify" id="notify"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════
+const CONTACTS = []; // Datos cargados desde Google Sheets
+
+const PROGRAMS = [
+  {nombre:"Maestría En Metodología Y Ciencias Aplicadas Al Entrenamiento Deportivo",facultad:"",emoji:"🏋️",color:"#eff6ff",coordinador:"Alexis Borges",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Diseño De Producción Para Cinematografía",facultad:"",emoji:"🎬",color:"#f0fdf4",coordinador:"Domingo Abreu",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Narrativa Audiovisual Y Transmedia",facultad:"",emoji:"🎬",color:"#fdf4ff",coordinador:"Inés de los Santos",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Neuropsicología Clínica",facultad:"",emoji:"🧠",color:"#fffbeb",coordinador:"Ana Estévez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Ciberseguridad",facultad:"",emoji:"🔐",color:"#fef2f2",coordinador:"Arlene Estévez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Doctorado En Estudios Del Español",facultad:"",emoji:"📚",color:"#f0f9ff",coordinador:"Florilena De Jesús Paredes",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Diseño Y Planificación Urbana",facultad:"",emoji:"🏙️",color:"#fefce8",coordinador:"Michel Valdéz",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Neuroeducación Cognitiva",facultad:"",emoji:"🧠",color:"#f7fee7",coordinador:"Glorianny Báez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría Movilidad Urbana Y Regional",facultad:"",emoji:"🏙️",color:"#fff1f2",coordinador:"Michel Valdéz",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Gestión De Riesgo Y Tesorería",facultad:"",emoji:"💹",color:"#f5f3ff",coordinador:"Isabel Sánchez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Gestión Bancaria Y Financiera",facultad:"",emoji:"💰",color:"#ecfdf5",coordinador:"Isabel Sánchez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Gestión De Empresas Concentración: Finanzas",facultad:"",emoji:"💰",color:"#e0f2fe",coordinador:"Isabel Sánchez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Mercados Financieros",facultad:"",emoji:"💰",color:"#fce7f3",coordinador:"Isabel Sánchez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Diseño Arquitectónico Concentración Arquitectura De Interiores/Alojamientos Turísticos",facultad:"",emoji:"🏛️",color:"#fef3c7",coordinador:"Jaime Sued",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Periodoncia E Implantología Oral",facultad:"",emoji:"🦷",color:"#f1f5f9",coordinador:"Aimee Cuesta",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Prostodoncia E Implantología Oral",facultad:"",emoji:"🦷",color:"#fff7ed",coordinador:"Kenia Rodríguez / Luvian Corniel",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Rehabilitación Bucal",facultad:"",emoji:"🦷",color:"#f0fdf4",coordinador:"Nelson Orsini / Luvian Corniel",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Odontopediatría",facultad:"",emoji:"🦷",color:"#fdf2f8",coordinador:"Zaida Jimenez / Luvian Corniel",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Especialidad En Trastornos Temporomandibular Y Dolor Orofacial",facultad:"",emoji:"🦷",color:"#f0f9ff",coordinador:"Elba Estrella / Luvian Corniel",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Gestión De Sistemas Ferroviarios",facultad:"",emoji:"🏙️",color:"#fffbeb",coordinador:"Jesús Ramírez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Gestión De Cadenas De Suministros",facultad:"",emoji:"📦",color:"#eff6ff",coordinador:"Luis Germosén / Edwin Hernández / Julián Mena",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Dirección De Comunicación Corporativa",facultad:"",emoji:"📣",color:"#f0fdf4",coordinador:"Magdalena Durán",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría Ejecutiva En Dirección De Proyectos",facultad:"",emoji:"📋",color:"#fdf4ff",coordinador:"Marcela Mirabal",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Contrataciones Públicas Estratégicas",facultad:"",emoji:"📜",color:"#fffbeb",coordinador:"Maribel Justo",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Seguridad Social",facultad:"",emoji:"🤝",color:"#fef2f2",coordinador:"Pascal Peña",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Ciencias Penales",facultad:"",emoji:"⚖️",color:"#f0f9ff",coordinador:"Miguelina Ureña",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Derecho De Los Negocios Corporativos",facultad:"",emoji:"📣",color:"#fefce8",coordinador:"Miguelina Ureña / Pascal Peña",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Derecho Constitucional Y Procesal Constitucional",facultad:"",emoji:"⚖️",color:"#f7fee7",coordinador:"Miguelina Ureña / Pascal Peña",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Procedimiento Civil",facultad:"",emoji:"⚖️",color:"#fff1f2",coordinador:"Miguelina Ureña",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Derecho Tributario",facultad:"",emoji:"💰",color:"#f5f3ff",coordinador:"Pascal Peña",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Derecho Del Trabajo Y De La Seguridad Social",facultad:"",emoji:"🤝",color:"#ecfdf5",coordinador:"Miguelina Ureña / Pascal Peña",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Gestión De Empresas Concentración Finanzas",facultad:"",emoji:"💰",color:"#e0f2fe",coordinador:"Natalia Concepción / Isabel Sánchez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Gestión De Empresas Concentración: Habilidades Directivas",facultad:"",emoji:"💼",color:"#fce7f3",coordinador:"Natalia Concepción / Isabel Sánchez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría Gestión De Empresas Concentración Estrategia",facultad:"",emoji:"💼",color:"#fef3c7",coordinador:"Natalia Concepción / Isabel Sánchez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Patologías Del Lenguaje Y Del Habla",facultad:"",emoji:"🗣️",color:"#f1f5f9",coordinador:"Sor Salcedo",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Administración De La Construcción",facultad:"",emoji:"💼",color:"#fff7ed",coordinador:"Pedro Reyes",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Gerencia En Servicios De Alimentación",facultad:"",emoji:"💼",color:"#f0fdf4",coordinador:"Yahaira Josefina Sánchez",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Doctorado En Historia Del Caribe",facultad:"",emoji:"📚",color:"#fdf2f8",coordinador:"Mukien Sang",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Derecho De Los Mercados Financieros",facultad:"",emoji:"💰",color:"#f0f9ff",coordinador:"Miguelina Ureña",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+  {nombre:"Maestría En Relaciones Internacionales",facultad:"",emoji:"🌍",color:"#fffbeb",coordinador:"Stephanie Pou",prospectos:0,interes:0,admitidos:0,pensum:null,archivos:[]},
+]; // 40 programas cargados
+
+const FUENTES = [
+  {nombre:'WhatsApp',icon:'ti ti-brand-whatsapp',color:'#16a34a',bg:'#dcfce7',key:'wa',count:520},
+  {nombre:'Página Web',icon:'ti ti-world',color:'#1d4ed8',bg:'#dbeafe',key:'web',count:310},
+  {nombre:'Instagram',icon:'ti ti-brand-instagram',color:'#be185d',bg:'#fce7f3',key:'ig',count:180},
+  {nombre:'Referido',icon:'ti ti-share',color:'#7c3aed',bg:'#f3e8ff',key:'ref',count:140},
+  {nombre:'Facebook',icon:'ti ti-brand-facebook',color:'#1d4ed8',bg:'#eff6ff',key:'fb',count:65},
+  {nombre:'Correo',icon:'ti ti-mail',color:'#b45309',bg:'#fef3c7',key:'email',count:33},
+];
+
+const COORDINADORES = []; // Agregar desde el sistema
+
+const ACTIVITIES = []; // Se generan dinámicamente
+
+let currentFilter = 'todos';
+let currentWAContact = 0;
+let chartsInit = {};
+
+
+// ══════════════════════════════════════════════
+//  GOOGLE SHEETS INTEGRATION
+// ══════════════════════════════════════════════
+const GS_CONFIG = {
+  sheetId: "1Z7IFXs8KBWBKbW0TBzecRIA4KiX04gtdXc2vVhs2828",
+  clientEmail: "crm-postgrado@crm-postgrado-pucmm.iam.gserviceaccount.com",
+  privateKey: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDUe9G33aPv5/Yf\nJ++Ao9KYD9kQWF3DjNatTfneui3vrsW+NY4ufFl0lUPi4BGYuzY87DcCzwd8zMEq\nzNczGGOUfOU7SfDbJO2or5oSyzNoiIVXoKG2SPnqaFUDGq23xkzmhZI0DlmzCkAp\nTPmVrk5ZPGX/6/tOFg7sqqGJ5ks2jHcF9YByAVO0fkhETwk/Pmum8VNl+vXy3hpv\nK6ioVDrzsLqbvHjiyrQfQo5SVyZTTyh8L1K9s+V/rDQUj8k/SJkHjwZSTsLkcaF1\nbjCTdvi9H0auNo2e1Tr2Dm+/GCklvJ3T/4uUNwLSERik2bfCR+Qf8V14EAuT+rLA\nhRGqiAzTAgMBAAECggEAaT8ZXj7Q3FxjewQva+L5RWuYIzH544nnrbjRWuKSLUW+\n2ZuyXNEoCAiFMyO0Y5fbYirIhsIgHc9XoMkMkNj0PhDtBER4Ijv04dh08vkmchEp\nJwHAB8e2zkY2UY7N3BjDb21awSEYige6RxrDB0JquWWiyjRLal6frtdHo0PoHlBm\nKsJVG7P0OFKC6+pW7k+VH0eK+Se8o3nXLirw4DYx582N2xHL7lbdYFpwIr3CHPxe\nKvM5dCW16xGag4IfBNpAsPuzKkaeYHzxIixHtllsXBoaVxvSlhvDDDdqzfXJt+dy\nOM7dV6XSNVv27qfhr5EEnWUWiHReEWz/7qrcNQXPIQKBgQD9lQGWMEvcLi0B+5vb\nc/iHgWdHFU0aFyf8cvPTxhldG+R2QHr1bZjqDJZKsPjcDWTsUr2FYHfzcKSf2BUO\ney3Vspwqd6dB7SDwuygjdOTdCa/QF9rWmUV6ozzO9SLZdnP9gDD0yukEYeRNQJTO\nTAXvrpYxb2eL438tekHg/Fn/swKBgQDWgn3p9vBNkEmvoBbp63HmqdeFUgiuwEZ2\nT7N956a01ZsZTetF86T8e/K4XIaoOWVLhpkTmaxXD1I71ZMM8vJijr96hqXHiBKt\n/4IB6nwdnvuQLTWbYYM8ChqUbp1m00+QsNs5vnzDuDXwtWKErARGYr7HsU2FzIaI\n7q/nP5QuYQKBgBugdD/MmzctwLGKm/xYsibxLjNMWs4Q38ZdL7tOxcyjEUzg0YST\noCk/ndAdX795phkpGoTBcdAP4Z+YhxLA0MmLYAAwcQR5tTEE8uaKAbUjLQha0Pi4\nUh1+U02o31cZ1KE1qh/BS4mysJDKDGw9VBg8yRgxrvJKorxtqWe9loCJAoGABuFM\nlJJ9Bp/YHS/vTDVnA9Tyuq305VX5bJYF1cX2TNqFDPy4zReRdR+sm0kscHzWyONa\nSYymQGyXYJ/rBYFNUOfvMEjdTFcK8lW9n74bmP+eZfNtQryP7v8L9zLNDZ09chCa\nF3IKomRoJn5K2KKDyJYmNFV1fRMgRYgSUEJzyEECgYAjTkVScoiFz6pnKwfWLquW\n7MD+MVmRDS4kkhQ6/DpU5JD157wVInyq5wDeziz9U89pVksaiA+oTTQHcy5cRwGJ\n96pjUrphDcKtGSt6AD5YNM2beaAgz4PsMvYn4wtmIa538Ve8JPdTSGxzKxK68QCt\nBtVGDPdBUkiRT2ewWR76Tw==\n-----END PRIVATE KEY-----\n",
+  sheetName: "Contactos"
+};
+
+let GS_TOKEN = null;
+let GS_TOKEN_EXPIRY = 0;
+
+// Get JWT token for Google API
+async function getGSToken() {
+  if(GS_TOKEN && Date.now() < GS_TOKEN_EXPIRY) return GS_TOKEN;
+  try {
+    const now = Math.floor(Date.now()/1000);
+    const header = btoa(JSON.stringify({alg:'RS256',typ:'JWT'})).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+    const claim = btoa(JSON.stringify({
+      iss: GS_CONFIG.clientEmail,
+      scope: 'https://www.googleapis.com/auth/spreadsheets',
+      aud: 'https://oauth2.googleapis.com/token',
+      exp: now+3600, iat: now
+    })).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+    const unsigned = header+'.'+claim;
+    // Use Web Crypto API to sign
+    const pemKey = GS_CONFIG.privateKey.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----/g,'').replace(/\\n/g,'').replace(/\s/g,'');
+    const binaryKey = Uint8Array.from(atob(pemKey), c=>c.charCodeAt(0));
+    const cryptoKey = await crypto.subtle.importKey('pkcs8', binaryKey, {name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'}, false, ['sign']);
+    const signature = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', cryptoKey, new TextEncoder().encode(unsigned));
+    const sig = btoa(String.fromCharCode(...new Uint8Array(signature))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+    const jwt = unsigned+'.'+sig;
+    const resp = await fetch('https://oauth2.googleapis.com/token', {
+      method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`
+    });
+    const data = await resp.json();
+    GS_TOKEN = data.access_token;
+    GS_TOKEN_EXPIRY = Date.now() + (data.expires_in - 60)*1000;
+    return GS_TOKEN;
+  } catch(e) { console.error('Token error:', e); return null; }
+}
+
+// Read all contacts from Google Sheets
+async function gsReadContacts() {
+  try {
+    const token = await getGSToken();
+    if(!token) return [];
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${GS_CONFIG.sheetId}/values/${GS_CONFIG.sheetName}!A:L`;
+    const resp = await fetch(url, {headers:{'Authorization':'Bearer '+token}});
+    const data = await resp.json();
+    if(!data.values || data.values.length < 2) return [];
+    const rows = data.values.slice(1); // skip header
+    return rows.map((r,i) => ({
+      id: parseInt(r[0])||i+1,
+      nombre: r[1]||'',
+      telefono: r[2]||'',
+      email: r[3]||'',
+      programa: r[4]||'',
+      estado: r[5]||'nuevo',
+      etiqueta: r[6]||'Nuevo',
+      fuente: r[7]||'wa',
+      asesor: r[8]||'',
+      notas: r[9]||'',
+      fecha: r[10]?new Date(r[10]):new Date(),
+      color: r[11]||'#1a3a8f',
+      mensajes: [],
+      _row: i+2 // actual row in sheet (1-indexed, +1 for header)
+    })).filter(c=>c.nombre);
+  } catch(e) { console.error('Read error:', e); return []; }
+}
+
+// Append a new contact to Google Sheets
+async function gsAddContact(contact) {
+  try {
+    const token = await getGSToken();
+    if(!token) return false;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${GS_CONFIG.sheetId}/values/${GS_CONFIG.sheetName}!A:L:append?valueInputOption=USER_ENTERED`;
+    const values = [[
+      contact.id, contact.nombre, contact.telefono, contact.email,
+      contact.programa, contact.estado, contact.etiqueta, contact.fuente,
+      contact.asesor, contact.notas||'', new Date().toLocaleDateString('es-DO'), contact.color||'#1a3a8f'
+    ]];
+    await fetch(url, {
+      method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body: JSON.stringify({values})
+    });
+    return true;
+  } catch(e) { console.error('Add error:', e); return false; }
+}
+
+// Update a contact row in Google Sheets
+async function gsUpdateContact(contact) {
+  try {
+    const token = await getGSToken();
+    if(!token) return false;
+    const row = contact._row||2;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${GS_CONFIG.sheetId}/values/${GS_CONFIG.sheetName}!A${row}:L${row}?valueInputOption=USER_ENTERED`;
+    const values = [[
+      contact.id, contact.nombre, contact.telefono, contact.email,
+      contact.programa, contact.estado, contact.etiqueta, contact.fuente,
+      contact.asesor, contact.notas||'', new Date().toLocaleDateString('es-DO'), contact.color||'#1a3a8f'
+    ]];
+    await fetch(url, {
+      method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body: JSON.stringify({values})
+    });
+    return true;
+  } catch(e) { console.error('Update error:', e); return false; }
+}
+
+// Initialize sheet headers if empty
+async function gsInitHeaders() {
+  try {
+    const token = await getGSToken();
+    if(!token) return;
+    const checkUrl = `https://sheets.googleapis.com/v4/spreadsheets/${GS_CONFIG.sheetId}/values/${GS_CONFIG.sheetName}!A1`;
+    const checkResp = await fetch(checkUrl, {headers:{'Authorization':'Bearer '+token}});
+    const checkData = await checkResp.json();
+    if(checkData.values && checkData.values[0] && checkData.values[0][0]==='ID') return;
+    // Write headers
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${GS_CONFIG.sheetId}/values/${GS_CONFIG.sheetName}!A1:L1?valueInputOption=USER_ENTERED`;
+    await fetch(url, {
+      method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body: JSON.stringify({values:[['ID','Nombre','Teléfono','Correo','Programa','Estado','Etiqueta','Fuente','Asesor','Notas','Fecha','Color']]})
+    });
+  } catch(e) { console.error('Headers error:', e); }
+}
+
+// Read programs from Google Sheets (columnas: Nombre | Coordinador)
+async function gsReadPrograms() {
+  try {
+    const token = await getGSToken();
+    if(!token) return;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${GS_CONFIG.sheetId}/values/Programas!A:B`;
+    const resp = await fetch(url, {headers:{'Authorization':'Bearer '+token}});
+    const data = await resp.json();
+    if(!data.values || data.values.length < 2) return;
+    const rows = data.values.slice(1); // saltar encabezado
+    const COLORS = ['#eff6ff','#f0fdf4','#fdf4ff','#fffbeb','#fef2f2','#f0f9ff','#fefce8','#f7fee7','#fff1f2','#f5f3ff','#ecfdf5','#e0f2fe','#fce7f3','#fef3c7','#f1f5f9'];
+    rows.forEach((r,i) => {
+      if(!r[0]) return;
+      const nombre = String(r[0]).trim();
+      const coordinador = String(r[1]||'').trim();
+      const exists = PROGRAMS.find(p=>p.nombre.toLowerCase()===nombre.toLowerCase());
+      if(exists){
+        // Actualizar coordinador si ya existe
+        exists.coordinador = coordinador;
+      } else {
+        PROGRAMS.push({
+          nombre,
+          coordinador,
+          facultad:'',
+          emoji: getAutoEmojiPrograma(nombre),
+          color: COLORS[i % COLORS.length],
+          prospectos:0, interes:0, admitidos:0,
+          pensum:null, archivos:[]
+        });
+      }
+    });
+    actualizarStatsProgramas();
+    if(document.getElementById('view-programas')?.classList.contains('active')) renderPrograms();
+  } catch(e) { console.log('Programs read error:', e); }
+}
+
+// Función de emoji automático accesible globalmente
+function getAutoEmojiPrograma(nombre){
+  const n = nombre.toLowerCase();
+  if(n.includes('deport')||n.includes('entrena')||n.includes('atletis')) return '🏋️';
+  if(n.includes('cine')||n.includes('cinemat')||n.includes('audiovisual')||n.includes('transmedia')||n.includes('narrativa')) return '🎬';
+  if(n.includes('neuropsicolog')||n.includes('neuroeducac')||n.includes('neuro')) return '🧠';
+  if(n.includes('ciberseguridad')||n.includes('seguridad inform')) return '🔐';
+  if(n.includes('español')||n.includes('letras')||n.includes('historia')||n.includes('humanid')||n.includes('caribe')) return '📚';
+  if(n.includes('urban')||n.includes('ciudad')||n.includes('movilidad')||n.includes('ferroviar')||n.includes('planificacion')) return '🏙️';
+  if(n.includes('riesgo')||n.includes('tesorer')) return '💹';
+  if(n.includes('bancari')||n.includes('financier')||n.includes('mercado')||n.includes('finanzas')||n.includes('tribut')) return '💰';
+  if(n.includes('arquitect')||n.includes('diseño')||n.includes('interior')||n.includes('alojamiento')) return '🏛️';
+  if(n.includes('periodon')||n.includes('prostod')||n.includes('odontop')||n.includes('bucal')||n.includes('dental')||n.includes('implantol')||n.includes('temporomandib')||n.includes('orofacial')) return '🦷';
+  if(n.includes('suministro')||n.includes('cadena')||n.includes('logistic')) return '📦';
+  if(n.includes('comunicac')||n.includes('corporat')||n.includes('marketing')||n.includes('mercadeo')) return '📣';
+  if(n.includes('proyecto')||n.includes('direcc')) return '📋';
+  if(n.includes('contratac')||n.includes('public')) return '📜';
+  if(n.includes('social')||n.includes('salud ocup')||n.includes('prevenc')) return '🤝';
+  if(n.includes('penal')||n.includes('derecho')||n.includes('constituc')||n.includes('procesal')||n.includes('civil')||n.includes('trabajo')||n.includes('laboral')||n.includes('corporat')||n.includes('negocio')) return '⚖️';
+  if(n.includes('gestion')||n.includes('gerencia')||n.includes('administrac')||n.includes('empresa')||n.includes('habilidades')||n.includes('estrategia')||n.includes('ejecut')) return '💼';
+  if(n.includes('lenguaje')||n.includes('habla')||n.includes('patolog')) return '🗣️';
+  if(n.includes('construccion')||n.includes('ingenieria')) return '🏗️';
+  if(n.includes('alimentac')||n.includes('gastronomia')||n.includes('nutricion')) return '🍽️';
+  if(n.includes('relaciones internac')||n.includes('diplomac')) return '🌍';
+  if(n.includes('doctorado')) return '🎓';
+  return '📖';
+}
+
+// Load contacts from Google Sheets into CONTACTS array
+async function gsLoadContacts() {
+  const el = document.getElementById('gs-status');
+  if(el) el.textContent = '⏳ Sincronizando con Google Sheets...';
+  try {
+    await gsInitHeaders();
+    const gsContacts = await gsReadContacts();
+    if(gsContacts.length > 0) {
+      // Merge: keep local mensajes, replace rest with GS data
+      gsContacts.forEach(gc => {
+        const existing = CONTACTS.find(c => c.id === gc.id);
+        gc.mensajes = existing ? existing.mensajes : [];
+        gc.color = existing ? existing.color : (gc.color || '#1a3a8f');
+      });
+      CONTACTS.length = 0;
+      CONTACTS.push(...gsContacts);
+    }
+    if(el) el.textContent = '✅ Google Sheets conectado — '+CONTACTS.length+' contactos';
+    renderDashContacts();
+    renderContacts();
+    actualizarStats();
+    actualizarStatsProgramas();
+    renderActivities();
+    renderEtiquetasGrid();
+    if(document.getElementById("view-indicadores")?.classList.contains("active")) initIndicadores();
+    if(document.getElementById("view-gerencia")?.classList.contains("active")) initGerencia();
+    if(document.getElementById("view-fuentes")?.classList.contains("active")){renderFuentes();initFuentesChart();}
+    renderFuentes();
+    if(document.getElementById('view-indicadores')?.classList.contains('active')) initIndicadores();
+    // Si la vista de programas está activa, actualizarla
+    if(document.getElementById('view-programas')?.classList.contains('active')){
+      renderPrograms();
+    }
+  } catch(e) {
+    if(el) el.textContent = '⚠ Error de conexión';
+    console.error(e);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════
+function showView(id, el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const v=document.getElementById('view-'+id);
+  if(v) v.classList.add('active');
+  if(el) el.classList.add('active');
+  // Init view
+  setTimeout(()=>{
+    if(id==='dashboard'){renderDashContacts();renderActivities();}
+    if(id==='contactos'){renderContacts();}
+    if(id==='conversaciones'){renderWAList();}
+    if(id==='programas'){renderPrograms();}
+    if(id==='fuentes'){renderFuentes();initFuentesChart();}
+    if(id==='coordinadores'){renderCoordinadores();}
+    if(id==='reportes'){renderReportes();}
+    if(id==='indicadores'){initIndicadores();}
+    if(id==='gerencia'){initGerencia();}
+    if(id==='etiquetas'){renderEtiquetasGrid();renderEtiquetaTable('todos');}
+    if(id==='actividades'){renderActividadesView();}
+  },50);
+}
+
+
+function actualizarStats(){
+  const total = CONTACTS.length;
+  const admitidos = CONTACTS.filter(c=>c.estado==='admitido').length;
+  const proceso = CONTACTS.filter(c=>c.estado==='proceso').length;
+  const listos = CONTACTS.filter(c=>c.estado==='listo').length;
+  const interesados = CONTACTS.filter(c=>c.estado==='interesado').length;
+  const contactados = CONTACTS.filter(c=>c.estado==='contactado').length;
+  const nuevos = CONTACTS.filter(c=>c.estado==='nuevo').length;
+  const noInt = CONTACTS.filter(c=>c.estado==='nointeresado').length;
+  const pct = (n,t) => t>0?(n/t*100).toFixed(0)+'%':'0%';
+  const conv = total>0?((admitidos/total)*100).toFixed(1)+'%':'0%';
+
+  const s = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  s('stat-total', total.toLocaleString());
+  s('stat-total-sub', nuevos+' nuevos · '+noInt+' no interesados');
+  s('stat-admitidos', admitidos);
+  s('stat-adm-sub', pct(admitidos,total)+' del total');
+  s('stat-proceso', proceso);
+  s('stat-proc-sub', pct(proceso,total)+' del total');
+  s('stat-listos', listos);
+  s('stat-list-sub', pct(listos,total)+' del total');
+  s('stat-interesados', interesados);
+  s('stat-int-sub', pct(interesados,total)+' del total');
+
+  // Actualizar pipeline
+  const pipeData = [
+    {label:'Nuevo Contacto', val:nuevos, max:Math.max(nuevos,1), color:'#3b82f6'},
+    {label:'Contactado', val:contactados, max:Math.max(nuevos,1), color:'#8b5cf6'},
+    {label:'Interesado', val:interesados, max:Math.max(nuevos,1), color:'#f59e0b'},
+    {label:'En Proceso', val:proceso, max:Math.max(nuevos,1), color:'#ef4444'},
+    {label:'Aplic. Completa', val:listos, max:Math.max(nuevos,1), color:'#10b981'},
+    {label:'Admitido', val:admitidos, max:Math.max(nuevos,1), color:'#059669'},
+  ];
+  const pipeline = document.querySelector('.pipeline');
+  if(pipeline){
+    pipeline.innerHTML = pipeData.map(p=>`
+      <div class="pipe-item">
+        <span class="pipe-label">${p.label}</span>
+        <div class="pipe-bar-wrap"><div class="pipe-bar" style="width:${p.max>0?(p.val/p.max*100):0}%;background:${p.color};"></div></div>
+        <span class="pipe-count">${p.val}</span>
+      </div>`).join('');
+    // Update conversion rate
+    const convEl = document.querySelector('.pipeline')?.closest('.card')?.querySelector('span strong');
+    if(convEl) convEl.textContent = conv;
+  }
+}
+
+// ══════════════════════════════════════════════
+//  DASHBOARD CONTACTS
+// ══════════════════════════════════════════════
+function renderDashContacts(){
+  actualizarStats();
+  actualizarStatsProgramas();
+  const tbody=document.getElementById('dash-contacts-tbody');
+  if(!tbody)return;
+  tbody.innerHTML=CONTACTS.slice(0,5).map(c=>`
+    <tr class="clickable" onclick="openContactConv(${c.id})">
+      <td><div class="flex-center"><div class="avatar-sm" style="background:${c.color};">${c.nombre.split(' ').map(n=>n[0]).join('').substring(0,2)}</div>${c.nombre}</div></td>
+      <td>📱 ${c.telefono}</td>
+      <td>${c.programa}</td>
+      <td><span class="fuente-badge ${c.fuente}">${getFuenteLabel(c.fuente)}</span></td>
+      <td><span class="badge ${c.estado}">${getEstadoLabel(c.estado)}</span></td>
+      <td>${formatTime(c.fecha)}</td>
+      <td><button class="btn-wa" onclick="event.stopPropagation();abrirWA('${c.telefono}','${c.nombre}')"><i class="ti ti-brand-whatsapp"></i></button></td>
+    </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  ACTIVITIES (live update)
+// ══════════════════════════════════════════════
+function generarActividades(){
+  // Generar actividades automáticas inteligentes desde contactos reales
+  const acts = [];
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+
+  // 1. Contactos nuevos sin contactar (prioridad alta)
+  CONTACTS.filter(c=>c.estado==='nuevo').slice(0,3).forEach(c=>{
+    acts.push({icon:'ti ti-phone',bg:'#dbeafe',color:'#1d4ed8',
+      title:'Llamar a '+c.nombre, sub:c.programa+' · Nuevo contacto',
+      time:'Pendiente', urgente:true, contactId:c.id, tel:c.telefono});
+  });
+
+  // 2. Interesados sin seguimiento reciente
+  CONTACTS.filter(c=>c.estado==='interesado').slice(0,2).forEach(c=>{
+    acts.push({icon:'ti ti-send',bg:'#fef3c7',color:'#d97706',
+      title:'Seguimiento a '+c.nombre, sub:c.programa+' · Interesado',
+      time:formatTime(c.fecha), contactId:c.id, tel:c.telefono});
+  });
+
+  // 3. En proceso - confirmar documentos
+  CONTACTS.filter(c=>c.estado==='proceso').slice(0,2).forEach(c=>{
+    acts.push({icon:'ti ti-file-check',bg:'#f3e8ff',color:'#7c3aed',
+      title:'Confirmar docs de '+c.nombre, sub:c.programa+' · En Proceso',
+      time:formatTime(c.fecha), contactId:c.id, tel:c.telefono});
+  });
+
+  // 4. Listos para inscripción
+  CONTACTS.filter(c=>c.estado==='listo').slice(0,2).forEach(c=>{
+    acts.push({icon:'ti ti-clipboard-check',bg:'#f0fdf4',color:'#16a34a',
+      title:'Inscribir a '+c.nombre, sub:c.programa+' · Listo para inscripción',
+      time:formatTime(c.fecha), contactId:c.id, tel:c.telefono});
+  });
+
+  return acts;
+}
+
+function renderActivities(){
+  const el=document.getElementById('activities-list');
+  if(!el)return;
+
+  const acts = generarActividades();
+
+  if(!acts.length){
+    el.innerHTML='<div style="text-align:center;color:#94a3b8;padding:20px;font-size:12px;">No hay actividades pendientes.<br>¡Todo al día! ✅</div>';
+    const upd=document.getElementById('act-update-time');
+    if(upd) upd.textContent='Actualizado: '+new Date().toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'});
+    return;
+  }
+
+  el.innerHTML=`<div class="timeline">${acts.map(a=>`
+    <div class="timeline-item">
+      <div class="tl-dot" style="background:${a.bg};color:${a.color};"><i class="${a.icon}" style="font-size:13px;"></i></div>
+      <div class="tl-content" style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+        <div style="flex:1;">
+          <div class="tl-title" style="${a.urgente?'color:#ef4444;':''}">${a.urgente?'🔴 ':''} ${a.title}</div>
+          <div class="tl-sub">${a.sub}</div>
+          <div class="tl-time">${a.time}</div>
+        </div>
+        ${a.tel?`<button class="btn-wa" style="padding:4px 8px;font-size:10px;flex-shrink:0;" onclick="abrirWA('${a.tel}','${a.title}')"><i class="ti ti-brand-whatsapp"></i></button>`:''}
+      </div>
+    </div>`).join('')}</div>`;
+
+  const upd=document.getElementById('act-update-time');
+  if(upd) upd.textContent='Actualizado: '+new Date().toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'});
+}
+// Auto-actualizar cada 60 segundos
+setInterval(renderActivities,60000);
+
+// ══════════════════════════════════════════════
+//  CONTACTS
+// ══════════════════════════════════════════════
+function renderContacts(filter='todos',search=''){
+  const tbody=document.getElementById('contacts-tbody');
+  if(!tbody)return;
+  let list=CONTACTS.filter(c=>(filter==='todos'||c.estado===filter)&&(search===''||c.nombre.toLowerCase().includes(search.toLowerCase())||c.programa.toLowerCase().includes(search.toLowerCase())));
+  document.getElementById('contacts-count').textContent=list.length+' contactos';
+  tbody.innerHTML=list.map(c=>`
+    <tr class="clickable">
+      <td onclick="showContactDetail(${c.id})" style="cursor:pointer;"><div class="flex-center"><div class="avatar-sm" style="background:${c.color};">${c.nombre.split(' ').map(n=>n[0]).join('').substring(0,2)}</div>${c.nombre}</div></td>
+      <td>${c.telefono}</td>
+      <td>${c.programa}</td>
+      <td class="status-cell">
+        <div style="position:relative;display:inline-block;">
+          <span class="badge ${c.estado}" onclick="toggleStatusDD(this,${c.id})" style="cursor:pointer;">${getEstadoLabel(c.estado)} ▾</span>
+          <div class="status-dropdown" id="dd-${c.id}">
+            ${['nuevo','contactado','interesado','proceso','admitido','listo','nointeresado'].map(s=>`<div class="status-option" onclick="changeStatus(${c.id},'${s}')"><span class="badge ${s}">${getEstadoLabel(s)}</span></div>`).join('')}
+          </div>
+        </div>
+      </td>
+      <td>
+        <select class="inline-select" onchange="changeEtiqueta(${c.id},this.value)">
+          ${['Seguimiento','Listo','Urgente','VIP','Docs Pendientes','No Interesado','Reconsiderar','Beca Solicitada'].map(e=>`<option ${c.etiqueta===e?'selected':''}>${e}</option>`).join('')}
+        </select>
+      </td>
+      <td><span class="fuente-badge ${c.fuente}">${getFuenteLabel(c.fuente)}</span></td>
+      <td>${c.asesor}</td>
+      <td>${formatTime(c.fecha)}</td>
+      <td><div style="display:flex;gap:4px;">
+        <button class="btn-wa btn-sm" onclick="abrirWA(${c.telefono},'${c.nombre}')"><i class="ti ti-brand-whatsapp"></i></button>
+        <button class="btn-secondary btn-sm" onclick="showContactDetail(${c.id})"><i class="ti ti-eye"></i> Ver</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function filtrarContactos(f,el){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderContacts(f);
+}
+
+function buscarContacto(val){renderContacts(currentFilter,val);}
+
+function toggleStatusDD(el,id){
+  document.querySelectorAll('.status-dropdown').forEach(d=>{if(d.id!=='dd-'+id)d.classList.remove('open');});
+  document.getElementById('dd-'+id).classList.toggle('open');
+  event.stopPropagation();
+}
+document.addEventListener('click',()=>document.querySelectorAll('.status-dropdown').forEach(d=>d.classList.remove('open')));
+
+function changeStatus(id,newStatus){
+  const c=CONTACTS.find(x=>x.id===id);
+  if(c){c.estado=newStatus;c.fecha=new Date();renderContacts(currentFilter);notify('Estado actualizado: '+getEstadoLabel(newStatus));
+    gsUpdateContact(c).catch(e=>console.log(e));
+    actualizarStats();
+    actualizarStatsProgramas();
+  }
+}
+
+function changeEtiqueta(id,val){
+  const c=CONTACTS.find(x=>x.id===id);
+  if(c){c.etiqueta=val;notify('Etiqueta actualizada: '+val);
+    gsUpdateContact(c).catch(e=>console.log(e));
+  }
+}
+
+
+// ══════════════════════════════════════════════
+//  WHATSAPP WEB
+// ══════════════════════════════════════════════
+function abrirWA(telefono, nombre){
+  const num = String(telefono).replace(/\D/g,'');
+  if(!num || num.length < 7){ notify('⚠ Este contacto no tiene teléfono registrado'); return; }
+  // Si tiene 10 dígitos (809XXXXXXX) agregar código RD (+1)
+  // Si tiene 11 dígitos empezando en 1 (18091234567) ya tiene código
+  let numFull = num;
+  if(num.length === 10) numFull = '1' + num;
+  else if(num.length === 7) numFull = '1809' + num;
+  const msg = encodeURIComponent('Hola ' + nombre + ', le contactamos del Decanato de Postgrado de la PUCMM.');
+  const url = 'https://wa.me/' + numFull + '?text=' + msg;
+  window.open(url, '_blank');
+  // Actualizar último contacto en CRM y Google Sheets
+  const c = CONTACTS.find(x => String(x.telefono).replace(/\D/g,'') === num);
+  if(c){ 
+    c.fecha = new Date(); 
+    gsUpdateContact(c).catch(e=>{});
+    renderDashContacts(); 
+    renderContacts(); 
+  }
+}
+
+function abrirWANumero(num){
+  const numFull = String(num).replace(/\D/g,'');
+  window.open('https://wa.me/'+(numFull.startsWith('1')?numFull:'1'+numFull),'_blank');
+}
+
+// ══════════════════════════════════════════════
+//  WHATSAPP
+// ══════════════════════════════════════════════
+function renderWAList(){
+  const el=document.getElementById('wa-contact-list-items');
+  if(!el)return;
+  if(!CONTACTS.length){
+    el.innerHTML='<div style="padding:20px;text-align:center;color:#94a3b8;font-size:12px;">No hay contactos aún</div>';
+    return;
+  }
+  el.innerHTML=CONTACTS.map((c,i)=>`
+    <div class="wa-contact-item ${i===currentWAContact?'active':''}" onclick="selectWAContact(${i})">
+      <div style="display:flex;align-items:center;gap:9px;">
+        <div class="avatar-sm" style="background:${c.color||'#1a3a8f'};width:36px;height:36px;font-size:11px;">${c.nombre.split(' ').map(n=>n[0]).join('').substring(0,2)}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:600;">${c.nombre}</div>
+          <div style="font-size:10px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.programa||'—'}</div>
+          <div style="font-size:10px;color:#94a3b8;">${formatTime(c.fecha,true)}</div>
+        </div>
+        <span class="badge ${c.estado}" style="font-size:9px;padding:1px 6px;">${getEstadoLabel(c.estado)}</span>
+      </div>
+    </div>`).join('');
+  selectWAContact(currentWAContact);
+}
+
+function selectWAContact(i){
+  if(!CONTACTS[i]) return;
+  currentWAContact=i;
+  const c=CONTACTS[i];
+  document.querySelectorAll('.wa-contact-item').forEach((el,j)=>el.classList.toggle('active',j===i));
+  const av=document.getElementById('wa-chat-av');
+  if(av){ av.textContent=c.nombre.split(' ').map(n=>n[0]).join('').substring(0,2); av.style.background=c.color||'#1a3a8f'; }
+  const nm=document.getElementById('wa-chat-name');
+  if(nm) nm.textContent=c.nombre;
+  const sb=document.getElementById('wa-chat-sub');
+  if(sb) sb.textContent=(c.programa||'—')+' · '+getEstadoLabel(c.estado);
+  renderWAMsgs(i);
+  renderWAInfo(i);
+}
+
+function renderWAMsgs(i){
+  const el=document.getElementById('wa-msgs-area');
+  if(!el)return;
+  const c=CONTACTS[i];
+  if(!c){ el.innerHTML=''; return; }
+  const msgs = c.mensajes||[];
+  if(!msgs.length){
+    el.innerHTML=`
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;padding:20px;">
+        <div style="width:60px;height:60px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;">💬</div>
+        <div style="text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:4px;">${c.nombre}</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px;">📱 ${c.telefono||'Sin teléfono'}</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:12px;">${c.programa||'—'} · <span class="badge ${c.estado}">${getEstadoLabel(c.estado)}</span></div>
+          <button class="btn-wa" style="margin:0 auto;padding:10px 20px;font-size:13px;" onclick="abrirWA('${c.telefono}','${c.nombre}')">
+            <i class="ti ti-brand-whatsapp"></i> Abrir WhatsApp
+          </button>
+          <div style="font-size:10px;color:#94a3b8;margin-top:8px;">Los mensajes se registran al enviar desde WhatsApp</div>
+        </div>
+      </div>`;
+    return;
+  }
+  el.innerHTML='<div class="msg-date">Hoy</div>'+msgs.map(m=>`<div class="msg-bubble ${m.from}">${m.text}<div class="msg-time">${m.time}${m.from==='sent'?' ✓✓':''}</div></div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+function sendWAMsg(area){
+  const inputId=area==='dash'?'dash-wa-input':'conv-wa-input';
+  const inp=document.getElementById(inputId);
+  if(!inp||!inp.value.trim())return;
+  const msg=inp.value.trim();
+  CONTACTS[currentWAContact].mensajes.push({from:'sent',text:msg,time:new Date().toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'})});
+  CONTACTS[currentWAContact].fecha=new Date();
+  inp.value='';
+  if(area==='conv')renderWAMsgs(currentWAContact);
+  renderDashContacts();
+  notify('Mensaje enviado ✓');
+}
+
+function openContactConv(id){
+  const i=CONTACTS.findIndex(c=>c.id===id);
+  currentWAContact=i>=0?i:0;
+  showView('conversaciones',document.querySelector('.nav-item[onclick*="conversaciones"]'));
+}
+
+// ══════════════════════════════════════════════
+//  CONTACT DETAIL
+// ══════════════════════════════════════════════
+function showContactDetail(id){
+  const c=CONTACTS.find(x=>x.id===id);
+  if(!c)return;
+  showModal('contact-detail',c);
+}
+
+// ══════════════════════════════════════════════
+//  PROGRAMS
+// ══════════════════════════════════════════════
+function renderPrograms(){
+  actualizarStatsProgramas(); // Recalcular siempre antes de renderizar
+  const el=document.getElementById('programs-grid');
+  if(!el)return;
+  if(!PROGRAMS.length){
+    el.innerHTML=`<div style="grid-column:span 3;text-align:center;padding:40px;color:#94a3b8;">
+      <div style="font-size:40px;margin-bottom:10px;">🎓</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:6px;">No hay programas aún</div>
+      <div style="font-size:12px;margin-bottom:14px;">Agrega los programas de postgrado disponibles</div>
+      <button class="btn-primary" style="margin:0 auto;" onclick="showModal('add-program')"><i class="ti ti-plus"></i> Agregar Primer Programa</button>
+    </div>
+    <div class="prog-card" style="border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;min-height:160px;cursor:pointer;" onclick="showModal('add-program')">
+      <div style="text-align:center;color:#94a3b8;"><div style="font-size:30px;margin-bottom:6px;">+</div><div style="font-size:12px;font-weight:600;">Agregar Programa</div></div>
+    </div>`;
+    return;
+  }
+  el.innerHTML=PROGRAMS.map((p,i)=>`
+    <div class="prog-card">
+      <div class="prog-top" style="background:${p.color};">${p.emoji}</div>
+      <div class="prog-body">
+        <div class="prog-name">${p.nombre}</div>
+        ${p.coordinador?`<div style="font-size:10px;color:#1a3a8f;font-weight:600;margin-bottom:3px;display:flex;align-items:center;gap:4px;"><i class="ti ti-user" style="font-size:11px;"></i>${p.coordinador}</div>`:''}
+        <div class="prog-faculty">${p.facultad}</div>
+        <div class="prog-stats">
+          <div class="prog-stat"><div class="prog-stat-val" style="color:#1a3a8f;">${p.prospectos}</div><div class="prog-stat-lbl">Prospectos</div></div>
+          <div class="prog-stat"><div class="prog-stat-val" style="color:#10b981;">${p.interes}%</div><div class="prog-stat-lbl">Interés</div></div>
+          <div class="prog-stat"><div class="prog-stat-val" style="color:#f59e0b;">${p.admitidos}</div><div class="prog-stat-lbl">Admitidos</div></div>
+        </div>
+        <div class="prog-actions">
+          <button class="prog-btn" onclick="verPensum(${i})"><i class="ti ti-file-text"></i> Pensum</button>
+          <button class="prog-btn" onclick="verArchivos(${i})"><i class="ti ti-folder"></i> Archivos</button>
+          <button class="prog-btn" onclick="subirArchivo(${i})"><i class="ti ti-upload"></i> Subir</button>
+        </div>
+      </div>
+    </div>`).join('')+`
+    <div class="prog-card" style="border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;min-height:160px;cursor:pointer;" onclick="showModal('add-program')">
+      <div style="text-align:center;color:#94a3b8;"><div style="font-size:30px;margin-bottom:6px;">+</div><div style="font-size:12px;font-weight:600;">Agregar Programa</div></div>
+    </div>`;
+}
+
+function verPensum(i){
+  const p=PROGRAMS[i];
+  if(p.pensum){showModal('ver-pensum',p);}
+  else{
+    const inp=document.createElement('input');inp.type='file';inp.accept='.pdf';
+    inp.onchange=e=>{const f=e.target.files[0];if(f){p.pensum={nombre:f.nombre||f.name,url:URL.createObjectURL(f)};notify('Pensum cargado: '+f.name);renderPrograms();}};
+    inp.click();
+  }
+}
+
+function verArchivos(i){showModal('ver-archivos',{prog:PROGRAMS[i],idx:i});}
+
+function subirArchivo(i){
+  const inp=document.createElement('input');inp.type='file';inp.multiple=true;
+  inp.onchange=e=>{
+    Array.from(e.target.files).forEach(f=>{
+      PROGRAMS[i].archivos.push({nombre:f.name,size:(f.size/1024).toFixed(0)+'KB',url:URL.createObjectURL(f)});
+    });
+    notify(e.target.files.length+' archivo(s) cargado(s)');
+    renderPrograms();
+  };
+  inp.click();
+}
+
+function subirArchivoModal(i){
+  const inp=document.createElement('input');inp.type='file';inp.multiple=true;
+  inp.onchange=e=>{
+    Array.from(e.target.files).forEach(f=>{
+      PROGRAMS[i].archivos.push({nombre:f.name,size:(f.size/1024).toFixed(0)+'KB',url:URL.createObjectURL(f)});
+    });
+    notify(e.target.files.length+' archivo(s) cargado(s)');
+    renderPrograms();
+    // Refrescar modal
+    showModal('ver-archivos',{prog:PROGRAMS[i],idx:i});
+  };
+  inp.click();
+}
+
+function subirPensumModal(i){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.pdf,.doc,.docx,.ppt,.pptx';
+  inp.onchange=e=>{
+    const f=e.target.files[0];
+    if(f){
+      PROGRAMS[i].pensum={nombre:f.name,url:URL.createObjectURL(f)};
+      notify('Pensum cargado: '+f.name);
+      renderPrograms();
+      showModal('ver-archivos',{prog:PROGRAMS[i],idx:i});
+    }
+  };
+  inp.click();
+}
+
+function eliminarArchivo(progIdx, fileIdx){
+  if(!confirm('¿Eliminar este archivo?')) return;
+  PROGRAMS[progIdx].archivos.splice(fileIdx,1);
+  notify('Archivo eliminado');
+  showModal('ver-archivos',{prog:PROGRAMS[progIdx],idx:progIdx});
+}
+
+function compartirArchivoWA(nombre, url, progIdx){
+  const prog = PROGRAMS[progIdx];
+  // Compartir el link del archivo por WhatsApp
+  const msg = encodeURIComponent(
+    '📄 *'+nombre+'*
+'+
+    '🎓 Programa: '+prog.nombre+'
+'+
+    '🔗 '+url+'
+
+'+
+    'Decanato de Postgrado — PUCMM'
+  );
+  window.open('https://wa.me/?text='+msg,'_blank');
+}
+
+// ══════════════════════════════════════════════
+//  FUENTES
+// ══════════════════════════════════════════════
+function renderFuentes(){
+  // Contar fuentes dinámicamente desde CONTACTS
+  const fuenteMap = {};
+  CONTACTS.forEach(c => {
+    const f = (c.fuente||'otro').toLowerCase().trim();
+    fuenteMap[f] = (fuenteMap[f]||0) + 1;
+  });
+
+  // Mapear claves a configuración visual
+  const fConfig = {
+    'wa':      {nombre:'WhatsApp',     icon:'ti ti-brand-whatsapp', color:'#16a34a', bg:'#dcfce7'},
+    'whatsapp':{nombre:'WhatsApp',     icon:'ti ti-brand-whatsapp', color:'#16a34a', bg:'#dcfce7'},
+    'web':     {nombre:'Página Web',   icon:'ti ti-world',          color:'#1d4ed8', bg:'#dbeafe'},
+    'ig':      {nombre:'Instagram',    icon:'ti ti-brand-instagram',color:'#be185d', bg:'#fce7f3'},
+    'instagram':{nombre:'Instagram',  icon:'ti ti-brand-instagram',color:'#be185d', bg:'#fce7f3'},
+    'ref':     {nombre:'Referido',     icon:'ti ti-share',          color:'#7c3aed', bg:'#f3e8ff'},
+    'referido':{nombre:'Referido',     icon:'ti ti-share',          color:'#7c3aed', bg:'#f3e8ff'},
+    'fb':      {nombre:'Facebook',     icon:'ti ti-brand-facebook', color:'#1d4ed8', bg:'#eff6ff'},
+    'facebook':{nombre:'Facebook',     icon:'ti ti-brand-facebook', color:'#1d4ed8', bg:'#eff6ff'},
+    'email':   {nombre:'Correo',       icon:'ti ti-mail',           color:'#b45309', bg:'#fef3c7'},
+    'correo':  {nombre:'Correo',       icon:'ti ti-mail',           color:'#b45309', bg:'#fef3c7'},
+    'tiktok':  {nombre:'TikTok',       icon:'ti ti-brand-tiktok',   color:'#000000', bg:'#f1f5f9'},
+    'linkedin':{nombre:'LinkedIn',     icon:'ti ti-brand-linkedin', color:'#0a66c2', bg:'#dbeafe'},
+    'twitter': {nombre:'Twitter/X',    icon:'ti ti-brand-twitter',  color:'#1d9bf0', bg:'#e7f3fc'},
+  };
+
+  const total = CONTACTS.length || 1;
+
+  // Merge FUENTES config con conteos reales
+  const allKeys = [...new Set([...Object.keys(fuenteMap), ...FUENTES.map(f=>f.key)])];
+  const merged = allKeys.map(key => {
+    const cfg = fConfig[key] || {nombre:key.charAt(0).toUpperCase()+key.slice(1), icon:'ti ti-star', color:'#64748b', bg:'#f8fafc'};
+    return {...cfg, key, count: fuenteMap[key]||0};
+  }).filter(f=>f.count>0).sort((a,b)=>b.count-a.count);
+
+  // Update FUENTES array
+  FUENTES.length=0;
+  FUENTES.push(...merged);
+
+  const el=document.getElementById('fuentes-list');
+  if(!el)return;
+
+  if(!merged.length){
+    el.innerHTML='<div style="text-align:center;color:#94a3b8;padding:20px;font-size:12px;">No hay datos de fuentes aún.<br>Importa contactos para ver las estadísticas.</div>';
+    return;
+  }
+
+  el.innerHTML=merged.map(f=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f1f5f9;">
+      <div style="width:32px;height:32px;border-radius:7px;background:${f.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="${f.icon}" style="color:${f.color};font-size:15px;"></i></div>
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:600;">${f.nombre}</div>
+        <div style="background:#f1f5f9;border-radius:3px;height:5px;margin-top:4px;overflow:hidden;">
+          <div style="width:${Math.round(f.count/total*100)}%;height:100%;background:${f.color};border-radius:3px;"></div>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:12px;font-weight:700;color:${f.color};">${f.count}</div>
+        <div style="font-size:10px;color:#64748b;">${Math.round(f.count/total*100)}%</div>
+      </div>
+    </div>`).join('');
+
+  // Update chart
+  if(chartsInit.fuentes){
+    chartsInit.fuentes=false;
+  }
+  initFuentesChart();
+}
+
+let fuentesChartInstance = null;
+function initFuentesChart(){
+  const el=document.getElementById('chart-fuentes');if(!el)return;
+  if(fuentesChartInstance){fuentesChartInstance.destroy();fuentesChartInstance=null;}
+  if(!FUENTES.length)return;
+  fuentesChartInstance=new Chart(el,{
+    type:'doughnut',
+    data:{
+      labels:FUENTES.map(f=>f.nombre+' ('+f.count+')'),
+      datasets:[{
+        data:FUENTES.map(f=>f.count),
+        backgroundColor:FUENTES.map(f=>f.bg),
+        borderColor:FUENTES.map(f=>f.color),
+        borderWidth:2
+      }]
+    },
+    options:{plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}},cutout:'60%'}
+  });
+}
+
+// ══════════════════════════════════════════════
+//  COORDINADORES
+// ══════════════════════════════════════════════
+function renderCoordinadores(){
+  const el=document.getElementById('coord-grid');if(!el)return;
+  el.innerHTML=COORDINADORES.map((c,i)=>`
+    <div class="coord-card">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px;">
+        <div class="coord-av" style="background:${c.color};">${c.cedula}</div>
+        <div><div style="font-size:13px;font-weight:700;">${c.nombre}</div><div style="font-size:11px;color:#64748b;">Coordinador — ${c.programa}</div></div>
+      </div>
+      <div class="coord-link">${window.location.href.split('?')[0]}?coord=${i}&prog=${encodeURIComponent(c.programa)}</div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-primary btn-sm" style="flex:1;justify-content:center;" onclick="copiarLink('${window.location.href.split('?')[0]}?coord=${i}')"><i class="ti ti-copy"></i> Copiar Link</button>
+        <button class="btn-secondary btn-sm" onclick="verVistaCoord(${i})"><i class="ti ti-eye"></i> Vista</button>
+      </div>
+    </div>`).join('')+`
+    <div style="background:#fff;border-radius:12px;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;min-height:160px;cursor:pointer;" onclick="showModal('add-coord')">
+      <div style="text-align:center;color:#94a3b8;"><div style="font-size:28px;margin-bottom:6px;">+</div><div style="font-size:12px;font-weight:600;">Agregar Coordinador</div></div>
+    </div>`;
+}
+
+function verVistaCoord(i){
+  const c=COORDINADORES[i];
+  const prog=PROGRAMS.find(p=>p.nombre===c.programa)||PROGRAMS[0];
+  const progContacts=CONTACTS.filter(ct=>ct.programa===c.programa);
+  showModal('vista-coord',{coord:c,prog,contacts:progContacts});
+}
+
+// ══════════════════════════════════════════════
+//  ETIQUETAS
+// ══════════════════════════════════════════════
+function renderEtiquetaTable(etq){
+  const tbody=document.getElementById('etiqueta-tbody');
+  const title=document.getElementById('etiqueta-title');
+  if(!tbody)return;
+  const list=etq==='todos'?CONTACTS:CONTACTS.filter(c=>c.etiqueta===etq);
+  title.textContent=etq==='todos'?'Todos los contactos':'Contactos con etiqueta: '+etq;
+  tbody.innerHTML=list.map(c=>`
+    <tr>
+      <td><div class="flex-center"><div class="avatar-sm" style="background:${c.color};font-size:10px;">${c.nombre.split(' ').map(n=>n[0]).join('').substring(0,2)}</div>${c.nombre}</div></td>
+      <td>${c.programa}</td>
+      <td><span class="badge ${c.estado}">${getEstadoLabel(c.estado)}</span></td>
+      <td><span class="tag ${getTagColor(c.etiqueta)}" style="padding:2px 8px;font-size:10px;">${c.etiqueta}</span></td>
+      <td>${c.asesor}</td>
+      <td><button class="btn-wa btn-sm" onclick="abrirWA(${c.telefono},'${c.nombre}')"><i class="ti ti-brand-whatsapp"></i></button></td>
+    </tr>`).join('');
+}
+
+function filtrarEtiqueta(etq){renderEtiquetaTable(etq);}
+
+// ══════════════════════════════════════════════
+//  REPORTES
+// ══════════════════════════════════════════════
+function renderReportes(){
+  const tbody=document.getElementById('reportes-tbody');
+  if(tbody) tbody.innerHTML=CONTACTS.map(c=>`<tr><td>${c.nombre}</td><td>${c.telefono}</td><td>${c.programa}</td><td><span class="badge ${c.estado}">${getEstadoLabel(c.estado)}</span></td><td>${c.asesor}</td><td>${getFuenteLabel(c.fuente)}</td><td>${formatTime(c.fecha)}</td></tr>`).join('');
+  if(!chartsInit.reportes){chartsInit.reportes=true;
+    setTimeout(()=>{
+      const ep=document.getElementById('chart-programas');
+      if(ep&&!ep._init){ep._init=true;new Chart(ep,{type:'doughnut',data:{labels:PROGRAMS.map(p=>p.nombre),datasets:[{data:PROGRAMS.map(p=>p.prospectos),backgroundColor:['#1a3a8f','#10b981','#8b5cf6','#f59e0b','#ef4444'],borderWidth:2,borderColor:'#fff'}]},options:{plugins:{legend:{position:'right',labels:{font:{size:10},padding:8}}},cutout:'60%'}});}
+      const es=document.getElementById('chart-estados');
+      if(es&&!es._init){es._init=true;new Chart(es,{type:'bar',data:{labels:['Nuevo','Contactado','Interesado','En Proceso','Admitido','Listo'],datasets:[{data:[312,180,86,45,24,12],backgroundColor:['#3b82f6','#8b5cf6','#f59e0b','#ef4444','#10b981','#1d4ed8'],borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#f8fafc'}},x:{grid:{display:false}}}}});}
+    },100);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  INDICADORES
+// ══════════════════════════════════════════════
+function initIndicadores(){
+  if(chartsInit.ind)return;chartsInit.ind=true;
+  setTimeout(()=>{
+    const cf=document.getElementById('chart-flujo');
+    if(cf&&!cf._init){cf._init=true;new Chart(cf,{type:'line',data:{labels:['Ene','Feb','Mar','Abr','May','Jun'],datasets:[{label:'Contactos',data:[180,220,195,310,280,312],borderColor:'#1a3a8f',backgroundColor:'#1a3a8f12',fill:true,tension:0.4},{label:'Admitidos',data:[12,18,15,22,19,24],borderColor:'#10b981',backgroundColor:'#10b98112',fill:true,tension:0.4}]},options:{plugins:{legend:{position:'top',labels:{font:{size:10}}}},scales:{y:{beginAtZero:true,grid:{color:'#f8fafc'}},x:{grid:{display:false}}}}});}
+    const cm=document.getElementById('chart-mes');
+    if(cm&&!cm._init){cm._init=true;new Chart(cm,{type:'bar',data:{labels:['Ene','Feb','Mar','Abr','May','Jun'],datasets:[{label:'Nuevos',data:[45,62,58,89,76,90],backgroundColor:'#1a3a8f',borderRadius:4},{label:'Contactados',data:[38,51,49,72,68,78],backgroundColor:'#10b981',borderRadius:4}]},options:{plugins:{legend:{position:'top',labels:{font:{size:10}}}},scales:{y:{beginAtZero:true,grid:{color:'#f8fafc'}},x:{grid:{display:false}}}}});}
+    const ca=document.getElementById('chart-asesores');
+    if(ca&&!ca._init){ca._init=true;new Chart(ca,{type:'radar',data:{labels:['Contactos','Admitidos','Respuesta','Seguimiento','Satisfacción'],datasets:[{label:'Cecilia Almonte',data:[87,85,90,88,92],borderColor:'#1a3a8f',backgroundColor:'#1a3a8f15'},{label:'Paola Ozuna',data:[79,75,82,80,85],borderColor:'#10b981',backgroundColor:'#10b98115'}]},options:{plugins:{legend:{position:'top',labels:{font:{size:10}}}},scales:{r:{grid:{color:'#f1f5f9'}}}}});}
+  },100);
+}
+
+// ══════════════════════════════════════════════
+//  GERENCIA
+// ══════════════════════════════════════════════
+function initGerencia(){
+  const el=document.getElementById('ger-resumen');
+  if(el) el.innerHTML=PROGRAMS.map(p=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px;background:#f8fafc;border-radius:7px;"><span style="font-size:12px;font-weight:600;">${p.nombre}</span><div style="display:flex;gap:6px;"><span class="badge interesado">${p.prospectos} prospectos</span><span class="badge admitido">${p.admitidos} admitidos</span></div></div>`).join('');
+  if(chartsInit.gerencia)return;chartsInit.gerencia=true;
+  setTimeout(()=>{
+    const cg=document.getElementById('chart-ger');
+    if(cg&&!cg._init){cg._init=true;new Chart(cg,{type:'bar',data:{labels:PROGRAMS.map(p=>p.nombre.length>15?p.nombre.substring(0,15)+'...':p.nombre),datasets:[{label:'Prospectos',data:PROGRAMS.map(p=>p.prospectos),backgroundColor:'#bfdbfe',borderRadius:4},{label:'Admitidos',data:PROGRAMS.map(p=>p.admitidos),backgroundColor:'#1a3a8f',borderRadius:4}]},options:{plugins:{legend:{position:'top',labels:{font:{size:10}}}},scales:{y:{beginAtZero:true,grid:{color:'#f8fafc'}},x:{grid:{display:false}}}}});}
+  },100);
+}
+
+// ══════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════
+
+function closeModal(){document.getElementById('modal-overlay').classList.remove('visible');}
+
+// ══════════════════════════════════════════════
+//  ACCIONES MODAL
+// ══════════════════════════════════════════════
+function guardarContacto(){
+  const n=document.getElementById('m-nombre')?.value;
+  if(!n){notify('El nombre es requerido');return;}
+  CONTACTS.push({
+    id:CONTACTS.length+1,
+    nombre:n,
+    telefono:document.getElementById('m-tel')?.value||'—',
+    email:document.getElementById('m-email')?.value||'—',
+    programa:document.getElementById('m-prog')?.value||PROGRAMS[0].nombre,
+    estado:document.getElementById('m-estado')?.value||'nuevo',
+    etiqueta:'Nuevo',fuente:document.getElementById('m-fuente')?.value||'wa',
+    asesor:document.getElementById('m-asesor')?.value||'Cecilia Almonte',
+    fecha:new Date(),color:'#'+Math.floor(Math.random()*0x1000000).toString(16).padStart(6,'0'),
+    mensajes:[]
+  });
+  closeModal();
+  notify('Guardando en Google Sheets...');
+  gsAddContact(CONTACTS[CONTACTS.length-1]).then(ok=>{
+    notify(ok?'✅ Contacto guardado en Google Sheets':'✅ Contacto agregado (sin conexión GS)');
+  });
+  renderContacts();renderDashContacts();
+}
+
+function agregarFuente(){
+  const n=document.getElementById('f-nombre')?.value;
+  if(!n)return;
+  FUENTES.push({nombre:n,icon:'ti ti-star',color:document.getElementById('f-color')?.value||'#1a3a8f',bg:'#f8fafc',key:n.toLowerCase(),count:0});
+  closeModal();notify('Fuente agregada ✓');renderFuentes();
+}
+
+function agregarCoord(){
+  const n=document.getElementById('c-nombre')?.value;
+  if(!n)return;
+  COORDINADORES.push({nombre:n,programa:document.getElementById('c-prog')?.value||PROGRAMS[0].nombre,cedula:n.split(' ').map(x=>x[0]).join('').substring(0,2).toUpperCase(),color:'#1a3a8f'});
+  closeModal();notify('Coordinador agregado ✓');renderCoordinadores();
+}
+
+// Paleta de colores automática para programas
+const PROG_COLORS = [
+  '#eff6ff','#f0fdf4','#fdf4ff','#fffbeb','#fef2f2',
+  '#f0f9ff','#fefce8','#f7fee7','#fff1f2','#f5f3ff',
+  '#ecfdf5','#fffbeb','#fef3c7','#e0f2fe','#fce7f3'
+];
+function getAutoColor(idx){ return PROG_COLORS[idx % PROG_COLORS.length]; }
+function autoEmojiPrograma(nombre){
+  const el = document.getElementById('p-emoji');
+  if(!el || el.value) return;
+  el.value = getAutoEmojiPrograma(nombre);
+}
+
+function agregarPrograma(){
+  const n=document.getElementById('p-nombre')?.value?.trim();
+  if(!n){notify('El nombre del programa es requerido');return;}
+  const emoji = document.getElementById('p-emoji')?.value || '🎓';
+  const color = getAutoColor(PROGRAMS.length);
+  PROGRAMS.push({
+    nombre:n,
+    facultad:document.getElementById('p-facultad')?.value?.trim()||'',
+    coordinador:document.getElementById('p-coord')?.value?.trim()||'',
+    emoji,
+    color,
+    prospectos:0,
+    interes:0,
+    admitidos:0,
+    pensum:null,
+    archivos:[]
+  });
+  closeModal();
+  notify('Programa agregado ✓');
+  renderPrograms();
+  actualizarStatsProgramas();
+}
+
+function actualizarStatsProgramas(){
+  PROGRAMS.forEach(p=>{
+    const pn = p.nombre.toLowerCase().trim();
+    // Comparar ignorando mayúsculas y espacios extra
+    const match = c => String(c.programa||'').toLowerCase().trim() === pn;
+    p.prospectos = CONTACTS.filter(match).length;
+    p.admitidos  = CONTACTS.filter(c=>match(c)&&c.estado==='admitido').length;
+    const interes = CONTACTS.filter(c=>match(c)&&['interesado','proceso','admitido','listo'].includes(c.estado)).length;
+    p.interes = p.prospectos>0 ? Math.round(interes/p.prospectos*100) : 0;
+  });
+  // Actualizar tarjetas visualmente sin re-renderizar
+  document.querySelectorAll('.prog-card').forEach((card,i)=>{
+    if(!PROGRAMS[i]) return;
+    const vals = card.querySelectorAll('.prog-stat-val');
+    if(vals[0]) vals[0].textContent = PROGRAMS[i].prospectos;
+    if(vals[1]) vals[1].textContent = PROGRAMS[i].interes+'%';
+    if(vals[2]) vals[2].textContent = PROGRAMS[i].admitidos;
+  });
+}
+
+// ══════════════════════════════════════════════
+//  EXCEL
+// ══════════════════════════════════════════════
+function descargarPlantilla(){
+  const wb=XLSX.utils.book_new();
+  const data=[
+    ['Nombre Completo','Teléfono','Correo','Programa de Interés','Estado','Fuente','Asesor','Notas'],
+    ['Carlos Pérez','809 123-4567','cperez@email.com','MBA Ejecutivo','nuevo','WhatsApp','Cecilia Almonte','Interesado en horario nocturno'],
+    ['Ana García','829 987-6543','agarcia@email.com','Maestría en Finanzas','contactado','Web','Paola Ozuna',''],
+  ];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:25},{wch:15},{wch:28},{wch:25},{wch:14},{wch:12},{wch:20},{wch:30}];
+  XLSX.utils.book_append_sheet(wb,ws,'Contactos');
+  XLSX.writeFile(wb,'Plantilla_CRM_Postgrado.xlsx');
+}
+
+function importarExcel(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const wb=XLSX.read(e.target.result,{type:'array'});
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    const rows=XLSX.utils.sheet_to_json(ws,{header:1});
+    let count=0;
+    rows.slice(1).forEach(row=>{
+      if(!row[0])return;
+      CONTACTS.push({id:CONTACTS.length+1,nombre:String(row[0]||'').trim(),telefono:String(row[1]||'').trim(),email:String(row[2]||'').trim(),programa:String(row[3]||PROGRAMS[0].nombre).trim(),estado:(String(row[4]||'nuevo').trim().toLowerCase()),etiqueta:'Nuevo',fuente:String(row[5]||'wa').trim().toLowerCase().substring(0,3),asesor:String(row[6]||'Cecilia Almonte').trim(),fecha:new Date(),color:'#1a3a8f',mensajes:[]});
+      count++;
+    });
+    notify(count+' contactos importados ✓');renderContacts();renderDashContacts();
+  };
+  reader.readAsArrayBuffer(file);
+  event.target.value='';
+}
+
+function exportarContactos(){
+  const wb=XLSX.utils.book_new();
+  const data=[['Nombre','Teléfono','Correo','Programa','Estado','Etiqueta','Fuente','Asesor','Último Contacto'],...CONTACTS.map(c=>[c.nombre,c.telefono,c.email,c.programa,getEstadoLabel(c.estado),c.etiqueta,getFuenteLabel(c.fuente),c.asesor,formatTime(c.fecha)])];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  XLSX.utils.book_append_sheet(wb,ws,'Contactos');
+  XLSX.writeFile(wb,'CRM_Postgrado_Export.xlsx');
+}
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+function getEstadoLabel(e){const m={nuevo:'Nuevo',contactado:'Contactado',interesado:'Interesado',proceso:'En Proceso',admitido:'Admitido',listo:'Listo Inscripción',nointeresado:'No Interesado'};return m[e]||e;}
+function getFuenteLabel(f){const m={wa:'WhatsApp',web:'Web',ig:'Instagram',ref:'Referido',fb:'Facebook',email:'Correo'};return m[f]||f;}
+function getTagColor(t){const m={'Urgente':'rojo','Seguimiento':'amarillo','Listo':'verde','Listo para Inscripción':'verde','VIP':'azul','Docs Pendientes':'morado','No Interesado':'rojo','Reconsiderar':'amarillo','Beca Solicitada':'verde','Nuevo':'azul'};return m[t]||'azul';}
+function formatTime(d,short=false){
+  if(!d)return '—';
+  const now=new Date();const diff=(now-d)/1000;
+  if(diff<60)return 'Ahora';
+  if(diff<3600)return Math.floor(diff/60)+'m';
+  if(diff<86400)return short?new Date(d).toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'}):'Hoy '+new Date(d).toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'});
+  if(diff<172800)return 'Ayer';
+  return new Date(d).toLocaleDateString('es-DO',{day:'2-digit',month:'2-digit'});
+}
+function copiarLink(link){navigator.clipboard.writeText(link).then(()=>notify('Link copiado ✓'));}
+function notify(msg){const el=document.getElementById('notify');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
+
+
+// ══════════════════════════════════════════════
+//  ETIQUETAS
+// ══════════════════════════════════════════════
+function renderEtiquetaTable(etq){
+  const tbody=document.getElementById('etiqueta-tbody');
+  const title=document.getElementById('etiqueta-title');
+  if(!tbody)return;
+  const list=etq==='todos'?CONTACTS:CONTACTS.filter(c=>c.etiqueta===etq);
+  if(title) title.textContent=etq==='todos'?'Todos los contactos':'Contactos: '+etq;
+  tbody.innerHTML=list.map(c=>`
+    <tr>
+      <td><div class="flex-center"><div class="avatar-sm" style="background:${c.color};font-size:10px;">${c.nombre.split(' ').map(n=>n[0]).join('').substring(0,2)}</div>${c.nombre}</div></td>
+      <td>${c.programa}</td>
+      <td><span class="badge ${c.estado}">${getEstadoLabel(c.estado)}</span></td>
+      <td><span class="tag ${getTagColor(c.etiqueta)}" style="padding:2px 8px;font-size:10px;">${c.etiqueta}</span></td>
+      <td>${c.asesor}</td>
+      <td><button class="btn-wa btn-sm" onclick="abrirWA(${c.telefono},'${c.nombre}')"><i class="ti ti-brand-whatsapp"></i></button></td>
+    </tr>`).join('');
+}
+function filtrarEtiqueta(etq){renderEtiquetaTable(etq);}
+
+// ══════════════════════════════════════════════
+//  REPORTES
+// ══════════════════════════════════════════════
+function renderReportes(){
+  const tbody=document.getElementById('reportes-tbody');
+  if(tbody) tbody.innerHTML=CONTACTS.map(c=>`<tr><td>${c.nombre}</td><td>${c.telefono}</td><td>${c.programa}</td><td><span class="badge ${c.estado}">${getEstadoLabel(c.estado)}</span></td><td>${c.asesor}</td><td>${getFuenteLabel(c.fuente)}</td><td>${formatTime(c.fecha)}</td></tr>`).join('');
+  if(chartsInit.reportes) return; chartsInit.reportes=true;
+  setTimeout(()=>{
+    const ep=document.getElementById('chart-programas');
+    if(ep&&!ep._init){ep._init=true;new Chart(ep,{type:'doughnut',data:{labels:PROGRAMS.map(p=>p.nombre),datasets:[{data:PROGRAMS.map(p=>p.prospectos),backgroundColor:['#1a3a8f','#10b981','#8b5cf6','#f59e0b','#ef4444'],borderWidth:2,borderColor:'#fff'}]},options:{plugins:{legend:{position:'right',labels:{font:{size:10},padding:8}}},cutout:'60%'}});}
+    const es=document.getElementById('chart-estados');
+    if(es&&!es._init){es._init=true;new Chart(es,{type:'bar',data:{labels:['Nuevo','Contactado','Interesado','En Proceso','Admitido','Listo'],datasets:[{data:[312,180,86,45,24,12],backgroundColor:['#3b82f6','#8b5cf6','#f59e0b','#ef4444','#10b981','#1d4ed8'],borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#f8fafc'}},x:{grid:{display:false}}}}});}
+  },100);
+}
+
+// ══════════════════════════════════════════════
+//  INDICADORES
+// ══════════════════════════════════════════════
+let indCharts = {};
+function initIndicadores(){
+  setTimeout(()=>{
+    // Calcular datos reales desde CONTACTS
+    const total = CONTACTS.length;
+    const estados = {nuevo:0,contactado:0,interesado:0,proceso:0,admitido:0,listo:0,nointeresado:0};
+    CONTACTS.forEach(c=>{ if(estados[c.estado]!==undefined) estados[c.estado]++; });
+
+    // Conteos por asesor
+    const asesores = {};
+    CONTACTS.forEach(c=>{
+      const a=c.asesor||'Sin asignar';
+      if(!asesores[a]) asesores[a]={total:0,admitidos:0};
+      asesores[a].total++;
+      if(c.estado==='admitido') asesores[a].admitidos++;
+    });
+    const asesorLabels = Object.keys(asesores).slice(0,4);
+    const asesorData = asesorLabels.map(a=>asesores[a].total);
+    const asesorAdm = asesorLabels.map(a=>asesores[a].admitidos);
+
+    // Conteos por programa (top 5)
+    const porPrograma = {};
+    CONTACTS.forEach(c=>{ porPrograma[c.programa]=(porPrograma[c.programa]||0)+1; });
+    const topProg = Object.entries(porPrograma).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+    // CHART FLUJO (Pipeline real)
+    const cf=document.getElementById('chart-flujo');
+    if(cf){ if(indCharts.flujo) indCharts.flujo.destroy();
+      indCharts.flujo=new Chart(cf,{type:'bar',
+        data:{labels:['Nuevo','Contactado','Interesado','En Proceso','Admitido','Listo'],
+          datasets:[{data:[estados.nuevo,estados.contactado,estados.interesado,estados.proceso,estados.admitido,estados.listo],
+            backgroundColor:['#3b82f6','#8b5cf6','#f59e0b','#ef4444','#10b981','#1d4ed8'],borderRadius:5}]},
+        options:{plugins:{legend:{display:false},title:{display:true,text:'Pipeline de Contactos — '+total+' total',font:{size:11}}},
+          scales:{y:{beginAtZero:true,grid:{color:'#f8fafc'}},x:{grid:{display:false}}}}});
+    }
+
+    // CHART PROGRAMAS (top 5)
+    const cm=document.getElementById('chart-mes');
+    if(cm){ if(indCharts.mes) indCharts.mes.destroy();
+      indCharts.mes=new Chart(cm,{type:'doughnut',
+        data:{labels:topProg.map(p=>p[0].length>20?p[0].substring(0,20)+'...':p[0]),
+          datasets:[{data:topProg.map(p=>p[1]),
+            backgroundColor:['#1a3a8f','#10b981','#8b5cf6','#f59e0b','#ef4444'],borderWidth:2,borderColor:'#fff'}]},
+        options:{plugins:{legend:{position:'bottom',labels:{font:{size:9},padding:6}}},cutout:'50%'}});
+    }
+
+    // CHART ASESORES
+    const ca=document.getElementById('chart-asesores');
+    if(ca){ if(indCharts.asesores) indCharts.asesores.destroy();
+      indCharts.asesores=new Chart(ca,{type:'bar',
+        data:{labels:asesorLabels.map(a=>a.split(' ')[0]),
+          datasets:[
+            {label:'Total',data:asesorData,backgroundColor:'#bfdbfe',borderRadius:4},
+            {label:'Admitidos',data:asesorAdm,backgroundColor:'#1a3a8f',borderRadius:4}
+          ]},
+        options:{plugins:{legend:{position:'top',labels:{font:{size:10}}}},
+          scales:{y:{beginAtZero:true,grid:{color:'#f8fafc'}},x:{grid:{display:false}}}}});
+    }
+
+    // Actualizar métricas clave
+    const conv = total>0?((estados.admitido/total)*100).toFixed(1)+'%':'0%';
+    const noInt = total>0?((estados.nointeresado/total)*100).toFixed(1)+'%':'0%';
+    const s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    s('ind-conv', conv);
+    s('ind-total', total.toLocaleString());
+    s('ind-noint', noInt);
+    s('ind-int', estados.interesado);
+
+    // Semáforo dinámico
+    const semEl = document.querySelector('.semaforo');
+    if(semEl && topProg.length){
+      semEl.innerHTML = topProg.map(([prog,cnt])=>{
+        const adm = CONTACTS.filter(c=>c.programa===prog&&c.estado==='admitido').length;
+        const convP = cnt>0?Math.round(adm/cnt*100):0;
+        const color = convP>=25?'#10b981':convP>=10?'#f59e0b':'#ef4444';
+        const label = convP>=25?'✅ Óptimo':convP>=10?'⚠️ Regular':'🔴 Bajo';
+        const bg = convP>=25?'#f0fdf4':convP>=10?'#fffbeb':'#fef2f2';
+        return `<div class="sem-item" style="background:${bg};">
+          <div class="sem-dot" style="background:${color};"></div>
+          <div><div class="sem-label">${prog.length>25?prog.substring(0,25)+'...':prog}</div>
+          <div style="font-size:10px;color:#64748b;">Conv. ${convP}% · ${cnt} prospectos</div></div>
+          <div class="sem-val" style="color:${color};">${label}</div>
+        </div>`;
+      }).join('');
+    }
+  },100);
+}
+
+// ══════════════════════════════════════════════
+//  GERENCIA
+// ══════════════════════════════════════════════
+function initGerencia(){
+  actualizarStatsProgramas();
+  const total = CONTACTS.length;
+  const admitidos = CONTACTS.filter(c=>c.estado==='admitido').length;
+  const proceso = CONTACTS.filter(c=>c.estado==='proceso').length;
+  const listos = CONTACTS.filter(c=>c.estado==='listo').length;
+  const conv = total>0?((admitidos/total)*100).toFixed(1):0;
+
+  // Actualizar tarjetas gerencia
+  const sg=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  sg('ger-stat-total', total.toLocaleString());
+  sg('ger-stat-adm', admitidos);
+  sg('ger-stat-proc', proceso);
+  sg('ger-stat-conv', conv+'%');
+
+  // Resumen por programa (solo con prospectos)
+  const el=document.getElementById('ger-resumen');
+  if(el){
+    const progsActivos = PROGRAMS.filter(p=>p.prospectos>0).sort((a,b)=>b.prospectos-a.prospectos);
+    el.innerHTML = progsActivos.length
+      ? progsActivos.map(p=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:9px;background:#f8fafc;border-radius:7px;">
+          <span style="font-size:11px;font-weight:600;">${p.emoji} ${p.nombre.substring(0,35)}${p.nombre.length>35?'...':''}</span>
+          <div style="display:flex;gap:5px;">
+            <span class="badge interesado">${p.prospectos} prospectos</span>
+            <span class="badge admitido">${p.admitidos} admitidos</span>
+          </div>
+        </div>`).join('')
+      : '<div style="text-align:center;color:#94a3b8;padding:20px;font-size:12px;">No hay datos aún</div>';
+  }
+
+  // Chart gerencia con datos reales
+  const cg=document.getElementById('chart-ger');
+  if(cg){
+    if(cg._chartInst) cg._chartInst.destroy();
+    const progsActivos = PROGRAMS.filter(p=>p.prospectos>0).sort((a,b)=>b.prospectos-a.prospectos).slice(0,8);
+    cg._chartInst = new Chart(cg,{
+      type:'bar',
+      data:{
+        labels:progsActivos.map(p=>p.emoji+' '+p.nombre.substring(0,18)+(p.nombre.length>18?'...':'')),
+        datasets:[
+          {label:'Prospectos',data:progsActivos.map(p=>p.prospectos),backgroundColor:'#bfdbfe',borderRadius:4},
+          {label:'Interesados',data:progsActivos.map(p=>CONTACTS.filter(c=>c.programa===p.nombre&&['interesado','proceso','admitido','listo'].includes(c.estado)).length),backgroundColor:'#93c5fd',borderRadius:4},
+          {label:'Admitidos',data:progsActivos.map(p=>p.admitidos),backgroundColor:'#1a3a8f',borderRadius:4}
+        ]
+      },
+      options:{
+        plugins:{legend:{position:'top',labels:{font:{size:10}}}},
+        scales:{y:{beginAtZero:true,grid:{color:'#f8fafc'}},x:{grid:{display:false},ticks:{font:{size:9}}}}
+      }
+    });
+  }
+}
+
+// ══════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════
+function showModal(type,data){
+  const overlay=document.getElementById('modal-overlay');
+  const body=document.getElementById('modal-body');
+  const title=document.getElementById('modal-title-text');
+  let html='';
+  if(type==='add-contact'){
+    title.textContent='Nuevo Contacto';
+    html=`<div class="form-grid2"><div class="form-group"><label class="form-label">Nombre Completo</label><input class="form-input" id="m-nombre" placeholder="Nombre y apellido"/></div><div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="m-tel" placeholder="809 000-0000"/></div></div>
+    <div class="form-group"><label class="form-label">Correo</label><input class="form-input" id="m-email" placeholder="correo@email.com"/></div>
+    <div class="form-group"><label class="form-label">Programa de Interés</label><select class="form-select" id="m-prog">${PROGRAMS.map(p=>`<option>${p.nombre}</option>`).join('')}</select></div>
+    <div class="form-grid2"><div class="form-group"><label class="form-label">Estado</label><select class="form-select" id="m-estado"><option value="nuevo">Nuevo</option><option value="contactado">Contactado</option><option value="interesado">Interesado</option><option value="proceso">En Proceso</option><option value="admitido">Admitido</option></select></div>
+    <div class="form-group"><label class="form-label">Fuente</label><select class="form-select" id="m-fuente"><option value="wa">WhatsApp</option><option value="web">Web</option><option value="ig">Instagram</option><option value="ref">Referido</option><option value="fb">Facebook</option><option value="email">Correo</option></select></div></div>
+    <div class="form-group"><label class="form-label">Asesor</label><select class="form-select" id="m-asesor"><option>Cecilia Almonte</option><option>Paola Ozuna</option><option>Gabriel Ferreras</option><option>Marieliza Romero</option></select></div>
+    <div class="form-group"><label class="form-label">Notas</label><textarea class="form-input" rows="2" id="m-notas" placeholder="Observaciones..."></textarea></div>
+    <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn-secondary" style="flex:1;" onclick="closeModal()">Cancelar</button><button class="btn-primary" style="flex:1;justify-content:center;" onclick="guardarContacto()"><i class="ti ti-check"></i> Guardar</button></div>`;
+  } else if(type==='contact-detail'&&data){
+    title.textContent='Ficha de Contacto';
+    html=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div class="avatar-sm" style="background:${data.color};width:48px;height:48px;font-size:16px;">${data.nombre.split(' ').map(n=>n[0]).join('').substring(0,2)}</div>
+      <div><div style="font-size:15px;font-weight:700;">${data.nombre}</div><div style="font-size:12px;color:#64748b;">${data.programa}</div></div>
+      <span class="badge ${data.estado}" style="margin-left:auto;">${getEstadoLabel(data.estado)}</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div style="background:#f8fafc;border-radius:8px;padding:10px;"><div style="font-size:10px;color:#64748b;margin-bottom:2px;">TELÉFONO</div><div style="font-size:13px;font-weight:600;">📱 ${data.telefono}</div></div>
+      <div style="background:#f8fafc;border-radius:8px;padding:10px;"><div style="font-size:10px;color:#64748b;margin-bottom:2px;">CORREO</div><div style="font-size:12px;font-weight:600;">✉️ ${data.email}</div></div>
+      <div style="background:#f8fafc;border-radius:8px;padding:10px;"><div style="font-size:10px;color:#64748b;margin-bottom:2px;">ASESOR</div><div style="font-size:12px;font-weight:600;">👤 ${data.asesor}</div></div>
+      <div style="background:#f8fafc;border-radius:8px;padding:10px;"><div style="font-size:10px;color:#64748b;margin-bottom:2px;">FUENTE</div><div style="font-size:12px;font-weight:600;">${getFuenteLabel(data.fuente)}</div></div>
+      <div style="background:#f8fafc;border-radius:8px;padding:10px;"><div style="font-size:10px;color:#64748b;margin-bottom:2px;">ETIQUETA</div><span class="tag ${getTagColor(data.etiqueta)}" style="padding:2px 8px;font-size:10px;">${data.etiqueta}</span></div>
+      <div style="background:#f8fafc;border-radius:8px;padding:10px;"><div style="font-size:10px;color:#64748b;margin-bottom:2px;">ÚLTIMO CONTACTO</div><div style="font-size:12px;font-weight:600;">${formatTime(data.fecha)}</div></div>
+    </div>
+    <div style="background:#e5ddd5;border-radius:8px;padding:10px;margin-bottom:12px;max-height:180px;overflow-y:auto;">
+      ${data.mensajes.map(m=>`<div class="msg-bubble ${m.from}" style="max-width:85%;margin:4px 0;">${m.text}<div class="msg-time">${m.time}</div></div>`).join('')}
+    </div>
+    <div style="display:flex;gap:7px;">
+      <button class="btn-wa" style="flex:1;justify-content:center;" onclick="closeModal();openContactConv(${data.id})"><i class="ti ti-brand-whatsapp"></i> Abrir Conversación</button>
+      <button class="btn-secondary" style="flex:1;justify-content:center;" onclick="closeModal()">Cerrar</button>
+    </div>`;
+  } else if(type==='ver-archivos'&&data){
+    title.textContent='📁 Archivos — '+data.prog.nombre;
+    const archivos = data.prog.archivos||[];
+    const getFileIcon = (nombre) => {
+      const ext = nombre.split('.').pop().toLowerCase();
+      if(['pdf'].includes(ext)) return {icon:'ti ti-file-type-pdf',color:'#ef4444'};
+      if(['doc','docx'].includes(ext)) return {icon:'ti ti-file-type-doc',color:'#1d4ed8'};
+      if(['xls','xlsx'].includes(ext)) return {icon:'ti ti-file-type-xls',color:'#16a34a'};
+      if(['ppt','pptx'].includes(ext)) return {icon:'ti ti-file-type-ppt',color:'#f59e0b'};
+      if(['jpg','jpeg','png','gif','webp'].includes(ext)) return {icon:'ti ti-photo',color:'#8b5cf6'};
+      return {icon:'ti ti-file',color:'#64748b'};
+    };
+    html=`
+    <div style="background:#f8fafc;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:#64748b;">
+      <strong style="color:#1e293b;">${data.prog.emoji} ${data.prog.nombre}</strong>
+      ${data.prog.coordinador?`<span style="margin-left:8px;color:#1a3a8f;"><i class="ti ti-user" style="font-size:10px;"></i> ${data.prog.coordinador}</span>`:''}
+    </div>
+
+    <div style="display:flex;gap:7px;margin-bottom:12px;">
+      <button class="btn-primary" style="flex:1;justify-content:center;" onclick="subirArchivoModal(${data.idx})">
+        <i class="ti ti-upload"></i> Subir Archivo
+      </button>
+      ${data.prog.pensum?
+        `<button class="btn-secondary" style="flex:1;justify-content:center;" onclick="verPensum(${data.idx})">
+          <i class="ti ti-file-text"></i> Ver Pensum
+        </button>`
+        :`<button class="btn-secondary" style="flex:1;justify-content:center;" onclick="subirPensumModal(${data.idx})">
+          <i class="ti ti-file-text"></i> Subir Pensum
+        </button>`
+      }
+    </div>
+
+    <div id="files-modal-list">
+      ${archivos.length ? archivos.map((f,fi)=>{
+        const ic = getFileIcon(f.nombre);
+        return `<div style="display:flex;align-items:center;gap:10px;padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:6px;">
+          <i class="${ic.icon}" style="font-size:22px;color:${ic.color};flex-shrink:0;"></i>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.nombre}</div>
+            <div style="font-size:10px;color:#64748b;">${f.size} · Subido hoy</div>
+          </div>
+          <div style="display:flex;gap:5px;flex-shrink:0;">
+            <a href="${f.url}" download="${f.nombre}">
+              <button class="btn-secondary btn-sm" title="Descargar"><i class="ti ti-download"></i></button>
+            </a>
+            <a href="${f.url}" target="_blank">
+              <button class="btn-secondary btn-sm" title="Ver"><i class="ti ti-eye"></i></button>
+            </a>
+            <button class="btn-wa btn-sm" title="Compartir por WhatsApp" onclick="compartirArchivoWA('${f.nombre}','${f.url}',${data.idx})">
+              <i class="ti ti-brand-whatsapp"></i>
+            </button>
+            <button class="btn-secondary btn-sm" style="color:#ef4444;border-color:#fecaca;" title="Eliminar" onclick="eliminarArchivo(${data.idx},${fi})">
+              <i class="ti ti-trash"></i>
+            </button>
+          </div>
+        </div>`;
+      }).join('')
+      : '<div style="text-align:center;color:#94a3b8;padding:30px;"><div style="font-size:36px;margin-bottom:8px;">📂</div><div style="font-size:12px;">No hay archivos subidos aún</div></div>'}
+    </div>`;
+  } else if(type==='ver-pensum'&&data){
+    title.textContent='Pensum — '+data.nombre;
+    html=`<div style="text-align:center;padding:20px;">
+      <div style="font-size:36px;margin-bottom:10px;">📄</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:8px;">${data.pensum.nombre}</div>
+      <a href="${data.pensum.url}" target="_blank"><button class="btn-primary" style="margin:0 auto;"><i class="ti ti-external-link"></i> Abrir Pensum</button></a>
+    </div>`;
+  } else if(type==='add-fuente'){
+    title.textContent='Agregar Fuente';
+    html=`<div class="form-group"><label class="form-label">Nombre de la Fuente</label><input class="form-input" id="f-nombre" placeholder="Ej: TikTok, LinkedIn..."/></div>
+    <div class="form-group"><label class="form-label">Color</label><input type="color" class="form-input" id="f-color" value="#1a3a8f" style="height:38px;"/></div>
+    <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn-secondary" style="flex:1;" onclick="closeModal()">Cancelar</button><button class="btn-primary" style="flex:1;justify-content:center;" onclick="agregarFuente()">Agregar</button></div>`;
+  } else if(type==='add-coord'){
+    title.textContent='Agregar Coordinador';
+    html=`<div class="form-group"><label class="form-label">Nombre Completo</label><input class="form-input" id="c-nombre" placeholder="Dr. Nombre Apellido"/></div>
+    <div class="form-group"><label class="form-label">Programa</label><select class="form-select" id="c-prog">${PROGRAMS.map(p=>`<option>${p.nombre}</option>`).join('')}</select></div>
+    <div class="form-group"><label class="form-label">Correo</label><input class="form-input" id="c-email" placeholder="correo@pucmm.edu.do"/></div>
+    <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn-secondary" style="flex:1;" onclick="closeModal()">Cancelar</button><button class="btn-primary" style="flex:1;justify-content:center;" onclick="agregarCoord()">Agregar</button></div>`;
+  } else if(type==='add-program'){
+    title.textContent='Nuevo Programa';
+    html=`<div class="form-group"><label class="form-label">Nombre del Programa</label><input class="form-input" id="p-nombre" placeholder="Maestría en..." oninput="autoEmojiPrograma(this.value)"/></div>
+    <div class="form-group"><label class="form-label">Facultad</label><input class="form-input" id="p-facultad" placeholder="Facultad de..."/></div>
+    <div class="form-group"><label class="form-label">Coordinador</label><input class="form-input" id="p-coord" placeholder="Nombre del coordinador"/></div>
+    <div class="form-group"><label class="form-label">Emoji (opcional — se asigna automático)</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;" id="emoji-picker">
+        ${['🎓','💰','⚖️','🏫','🧠','💊','🏗️','💻','🌍','📊','🔬','✈️','🎨','📚','🏥','⚙️'].map(e=>`<span onclick="document.getElementById('p-emoji').value='${e}';document.querySelectorAll('.ep-btn').forEach(b=>b.style.background='#f8fafc');this.style.background='#dbeafe';" class="ep-btn" style="font-size:22px;cursor:pointer;padding:4px;border-radius:6px;background:#f8fafc;">${e}</span>`).join('')}
+      </div>
+      <input class="form-input" id="p-emoji" placeholder="🎓" maxlength="2"/>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn-secondary" style="flex:1;" onclick="closeModal()">Cancelar</button><button class="btn-primary" style="flex:1;justify-content:center;" onclick="agregarPrograma()"><i class="ti ti-plus"></i> Agregar</button></div>`;
+  } else if(type==='add-user'){
+    title.textContent='Nuevo Usuario';
+    html=`<div class="form-grid2"><div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="u-nombre"/></div><div class="form-group"><label class="form-label">Correo</label><input class="form-input" id="u-email"/></div></div>
+    <div class="form-group"><label class="form-label">Cargo</label><input class="form-input" id="u-cargo"/></div>
+    <div class="form-group"><label class="form-label">Rol</label><select class="form-select"><option>Asesora</option><option>Coordinadora</option><option>Administrador</option></select></div>
+    <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn-secondary" style="flex:1;" onclick="closeModal()">Cancelar</button><button class="btn-primary" style="flex:1;justify-content:center;" onclick="notify('Usuario agregado ✓');closeModal()">Guardar</button></div>`;
+  } else if(type==='vista-coord'&&data){
+    title.textContent='Vista Coordinador — '+data.coord.nombre;
+    const stats=[
+      {k:'nuevo',v:data.contacts.filter(c=>c.estado==='nuevo').length},
+      {k:'contactado',v:data.contacts.filter(c=>c.estado==='contactado').length},
+      {k:'interesado',v:data.contacts.filter(c=>c.estado==='interesado').length},
+      {k:'admitido',v:data.contacts.filter(c=>c.estado==='admitido').length}
+    ];
+    html=`<div style="background:#f8fafc;border-radius:10px;padding:14px;margin-bottom:14px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:6px;">📊 ${data.prog.nombre}</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        ${stats.map(s=>`<div style="background:#fff;border-radius:8px;padding:10px;text-align:center;"><div style="font-family:var(--num-font);font-size:20px;font-weight:700;color:#1a3a8f;">${s.v}</div><div style="font-size:10px;color:#64748b;">${getEstadoLabel(s.k)}</div></div>`).join('')}
+      </div>
+    </div>
+    <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Contactos del programa:</div>
+    <div style="max-height:200px;overflow-y:auto;">
+      ${data.contacts.map(c=>`<div style="display:flex;align-items:center;gap:8px;padding:7px;border-bottom:1px solid #f1f5f9;"><div class="avatar-sm" style="background:${c.color};font-size:10px;">${c.nombre.split(' ').map(n=>n[0]).join('').substring(0,2)}</div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">${c.nombre}</div><div style="font-size:10px;color:#64748b;">${c.telefono}</div></div><span class="badge ${c.estado}">${getEstadoLabel(c.estado)}</span></div>`).join('')||'<div style="text-align:center;color:#94a3b8;padding:14px;">No hay contactos en este programa</div>'}
+    </div>
+    <button class="btn-secondary" style="width:100%;justify-content:center;margin-top:10px;" onclick="closeModal()">Cerrar</button>`;
+  }
+  body.innerHTML=html;
+  overlay.classList.add('visible');
+}
+
+
+// ══════════════════════════════════════════════
+//  CONVERSACIONES - Info + Notas + Historial
+// ══════════════════════════════════════════════
+function filtrarWAContacts(val){
+  document.querySelectorAll('.wa-contact-item').forEach((el,i)=>{
+    const c = CONTACTS[i];
+    if(!c) return;
+    el.style.display = c.nombre.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function abrirWADesdeConv(){
+  const c = CONTACTS[currentWAContact];
+  if(c) abrirWA(c.telefono, c.nombre);
+}
+
+function cambiarEstadoDesdeConv(val){
+  if(!val) return;
+  const c = CONTACTS[currentWAContact];
+  if(c){ changeStatus(c.id, val); }
+  document.getElementById('wa-estado-select').value='';
+}
+
+function guardarNota(){
+  const inp = document.getElementById('nota-input');
+  if(!inp || !inp.value.trim()) return;
+  const c = CONTACTS[currentWAContact];
+  if(!c) return;
+  if(!c.notas) c.notas = [];
+  if(typeof c.notas === 'string') c.notas = [{txt:c.notas, fecha:new Date().toLocaleDateString('es-DO'), quien:'Gabriel Ferreras'}];
+  c.notas.push({txt:inp.value.trim(), fecha:new Date().toLocaleString('es-DO',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}), quien:'Gabriel Ferreras'});
+  c.fecha = new Date();
+  gsUpdateContact(c).catch(e=>{});
+  inp.value='';
+  renderWAInfo(currentWAContact);
+  notify('Nota guardada ✓');
+}
+
+function renderWAInfo(i){
+  const c = CONTACTS[i];
+  if(!c) return;
+  const av = document.getElementById('wa-info-av');
+  if(av){ av.textContent=c.nombre.split(' ').map(n=>n[0]).join('').substring(0,2); av.style.background=c.color||'#1a3a8f'; }
+  const s=(id,v)=>{const el=document.getElementById(id);if(el)el.innerHTML=v;};
+  s('wa-info-name', c.nombre);
+  s('wa-info-estado', `<span class="badge ${c.estado}">${getEstadoLabel(c.estado)}</span>`);
+  s('wa-info-prog', c.programa||'—');
+  s('wa-info-tel', c.telefono?'📱 '+c.telefono:'Sin teléfono');
+  // Historial de notas
+  const hist = document.getElementById('wa-historial');
+  if(hist){
+    const notas = Array.isArray(c.notas) ? c.notas : (c.notas?[{txt:c.notas,fecha:'—',quien:'—'}]:[]);
+    hist.innerHTML = notas.length
+      ? notas.slice().reverse().map(n=>`
+        <div style="background:#fff;border:1px solid var(--border);border-radius:7px;padding:8px;margin-bottom:6px;">
+          <div style="font-size:11px;color:#1e293b;margin-bottom:4px;">${n.txt}</div>
+          <div style="font-size:9px;color:#94a3b8;">${n.quien||'—'} · ${n.fecha||'—'}</div>
+        </div>`).join('')
+      : '<div style="font-size:11px;color:#94a3b8;text-align:center;padding:10px;">Sin notas aún</div>';
+  }
+}
+
+// ══════════════════════════════════════════════
+//  ACTIVIDADES - Checklist dinámico
+// ══════════════════════════════════════════════
+let actividadesCompletadas = new Set();
+
+function renderActividadesView(){
+  // Fecha de hoy
+  const fechaEl = document.getElementById('act-fecha');
+  if(fechaEl) fechaEl.textContent = new Date().toLocaleDateString('es-DO',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  // Stats dinámicos
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const nuevosHoy = CONTACTS.filter(c=>{ const f=new Date(c.fecha); f.setHours(0,0,0,0); return f.getTime()===hoy.getTime(); }).length;
+  const acts = generarActividades();
+  const completadas = actividadesCompletadas.size;
+  const pendientes = acts.length - completadas;
+  const urgentes = acts.filter(a=>a.urgente).length;
+
+  const s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  s('act-stat-nuevos', nuevosHoy);
+  s('act-stat-comp', completadas);
+  s('act-stat-pend', pendientes);
+  s('act-stat-urg', urgentes);
+
+  // Progress
+  const progTxt = document.getElementById('act-progress-txt');
+  if(progTxt) progTxt.textContent = completadas+' de '+acts.length+' completadas';
+
+  // Checklist
+  const el = document.getElementById('act-checklist');
+  if(!el) return;
+  if(!acts.length){
+    el.innerHTML='<div style="text-align:center;color:#94a3b8;padding:30px;"><div style="font-size:36px;margin-bottom:8px;">🎉</div><div style="font-size:13px;font-weight:600;">¡Todo al día!</div><div style="font-size:11px;">No hay tareas pendientes por ahora.</div></div>';
+    return;
+  }
+  el.innerHTML = acts.map((a,i)=>{
+    const done = actividadesCompletadas.has(i);
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:${done?'#f0fdf4':'#fff'};border:1px solid ${done?'#bbf7d0':'var(--border)'};border-radius:8px;transition:all .2s;">
+      <input type="checkbox" ${done?'checked':''} onchange="toggleActividad(${i},this)" style="width:16px;height:16px;cursor:pointer;accent-color:#10b981;">
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:600;${done?'text-decoration:line-through;color:#94a3b8;':''}${a.urgente?'color:#ef4444;':''}">${a.urgente?'🔴 ':''}${a.title}</div>
+        <div style="font-size:10px;color:#64748b;">${a.sub}</div>
+      </div>
+      ${a.tel?`<button class="btn-wa" style="padding:4px 8px;font-size:10px;" onclick="abrirWA('${a.tel}','${a.title}')"><i class="ti ti-brand-whatsapp"></i></button>`:''}
+    </div>`;
+  }).join('');
+}
+
+function toggleActividad(idx, checkbox){
+  if(checkbox.checked){
+    actividadesCompletadas.add(idx);
+    notify('✅ Actividad completada');
+    // Generar nueva tarea si hay más contactos pendientes
+    setTimeout(()=>renderActividadesView(), 500);
+  } else {
+    actividadesCompletadas.delete(idx);
+    renderActividadesView();
+  }
+}
+
+function agregarActividadManual(){
+  showModal('add-activity');
+}
+
+// ══════════════════════════════════════════════
+//  ETIQUETAS - Contadores dinámicos desde contactos
+// ══════════════════════════════════════════════
+const ETIQUETAS_CONFIG = [
+  {key:'Urgente', cls:'rojo', icon:'ti ti-alert-circle'},
+  {key:'Seguimiento', cls:'amarillo', icon:'ti ti-clock'},
+  {key:'Listo para Inscripción', cls:'verde', icon:'ti ti-check'},
+  {key:'VIP', cls:'azul', icon:'ti ti-star'},
+  {key:'Docs Pendientes', cls:'morado', icon:'ti ti-file'},
+  {key:'No Interesado', cls:'rojo', icon:'ti ti-x'},
+  {key:'Reconsiderar', cls:'amarillo', icon:'ti ti-refresh'},
+  {key:'Beca Solicitada', cls:'verde', icon:'ti ti-coin'},
+  {key:'Nuevo', cls:'azul', icon:'ti ti-plus'},
+];
+
+function renderEtiquetasGrid(){
+  const el = document.getElementById('etiquetas-grid');
+  if(!el) return;
+  // Contar desde contactos reales
+  const counts = {};
+  CONTACTS.forEach(c=>{ if(c.etiqueta) counts[c.etiqueta]=(counts[c.etiqueta]||0)+1; });
+  // Merge config + extra
+  const todas = [...ETIQUETAS_CONFIG];
+  Object.keys(counts).forEach(k=>{ if(!todas.find(e=>e.key===k)) todas.push({key:k,cls:'azul',icon:'ti ti-tag'}); });
+  el.innerHTML = todas.map(e=>`
+    <span class="tag ${e.cls}" onclick="filtrarEtiqueta('${e.key}')">
+      <i class="${e.icon}"></i> ${e.key} (${counts[e.key]||0})
+    </span>`).join('');
+}
+
+function eliminarFormulario(){
+  notify('Selecciona el formulario a eliminar primero');
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+window.addEventListener('load',()=>{
+  renderDashContacts();
+  renderActivities();
+  // Load from Google Sheets — contactos primero, luego programas
+  gsLoadContacts().then(()=>{
+    gsReadPrograms();
+  });
+  // Auto-sync every 5 minutes
+  setInterval(gsLoadContacts, 300000);
+  // Verificar URL params para vista coordinador
+  const params=new URLSearchParams(window.location.search);
+  if(params.has('coord')){
+    const i=parseInt(params.get('coord'));
+    verVistaCoord(i);
+  }
+});
+</script>
+</body>
+</html>
